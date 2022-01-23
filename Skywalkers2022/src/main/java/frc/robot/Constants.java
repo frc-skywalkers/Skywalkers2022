@@ -37,7 +37,7 @@ public final class Constants {
 
     public static final class ClimberConstants {
         public static final int kMotorPort = 0; // might need to be changed
-        
+        public static final double kInitialSpeedControl = 1;
         public static final boolean kClimberInvert = false; // might need to be changed
     }
 }

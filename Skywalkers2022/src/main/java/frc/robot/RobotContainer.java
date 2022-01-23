@@ -40,7 +40,7 @@ public class RobotContainer {
     climber.setDefaultCommand(
       new RunCommand(
           () ->
-            climber.move(driverController.getRawAxis(OIConstants.kLeftY)),
+            climber.move(driverController.getRawAxis(OIConstants.kLeftY), driverController.getRawAxis(OIConstants.kRightY)),
           climber));
 
     // Configure the button bindings

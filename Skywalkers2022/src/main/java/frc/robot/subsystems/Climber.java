@@ -12,6 +12,7 @@ import frc.robot.Constants.ClimberConstants;
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   private final CANSparkMax climberMotor = new CANSparkMax(ClimberConstants.kMotorPort, MotorType.kBrushless);
+  private double speedControl = ClimberConstants.kInitialSpeedControl;
 
   public Climber() {
     climberMotor.restoreFactoryDefaults();
@@ -23,8 +24,9 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void move(double speed) {
-    climberMotor.set(speed);
+  public void move(double speed, double speedIncrement) {
+    speedControl += 0.01 * speedIncrement;
+    climberMotor.set(speedControl * speed);
   }
 
   public void stop() {
