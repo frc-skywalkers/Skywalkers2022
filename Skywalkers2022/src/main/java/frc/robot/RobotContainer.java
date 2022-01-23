@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,8 +20,8 @@ import frc.robot.subsystems.Drivetrain;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private Drivetrain drive = new Drivetrain();
+  // private Drivetrain drive = new Drivetrain(); //------------------------------------------------
+  private Climber climber = new Climber();
 
   XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -28,13 +29,19 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drive.setDefaultCommand(
-        new RunCommand(
-            () ->
-              drive.arcadeDrive(
-                  -driverController.getRawAxis(OIConstants.kLeftY),
-                  driverController.getRawAxis(OIConstants.kRightX)),
-            drive));
+    // drive.setDefaultCommand( //------------------------------------------------------------------
+    //     new RunCommand(
+    //         () ->
+    //           drive.arcadeDrive(
+    //               -driverController.getRawAxis(OIConstants.kLeftY),
+    //               driverController.getRawAxis(OIConstants.kRightX)),
+    //         drive));
+    
+    climber.setDefaultCommand(
+      new RunCommand(
+          () ->
+            climber.move(driverController.getRawAxis(OIConstants.kLeftY)),
+          climber));
 
     // Configure the button bindings
     configureButtonBindings();

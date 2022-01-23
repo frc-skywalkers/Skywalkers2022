@@ -35,4 +35,9 @@ public final class Constants {
         public static final double kMaxOutput = 0.3;
     }
 
+    public static final class ClimberConstants {
+        public static final int kMotorPort = 0; // might need to be changed
+        
+        public static final boolean kClimberInvert = false; // might need to be changed
+    }
 }
