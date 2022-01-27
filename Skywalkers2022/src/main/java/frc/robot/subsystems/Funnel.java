@@ -24,12 +24,4 @@ public class Funnel extends SubsystemBase {
     // set motors to funnel speed
   }
 
-  public void setLeftSpeed(double speed) {
-    // set left motor speed
-  }
-
-  public void setRightSpeed(double speed) {
-    // set right motor speed
-  }
-
 }
