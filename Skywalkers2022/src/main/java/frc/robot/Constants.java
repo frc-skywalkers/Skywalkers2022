@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 public final class Constants {
 
     public static final class OIConstants {
-        public static final int kDriverControllerPort = 1;
+        public static final int kDriverControllerPort = 0;
         public static final int kLeftY = 1;
         public static final int kRightX = 4;
         public static final int kRightY = 5;
@@ -47,8 +47,8 @@ public final class Constants {
     }
     public static final class IntakeConstants {
         public static final int kMotorPort = 3;
-        public static final double kMaxOutput = 0.5;
-        public static final boolean kIntakeInvert = false;
+        public static final double kMaxOutput = 0.8;
+        public static final boolean kIntakeInvert = true;
     }
     public static final class ArmConstants {
         public static final int kMotorPort = 5;

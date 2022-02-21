@@ -56,7 +56,7 @@ public class Drivetrain extends SubsystemBase {
     rightMaster.setInverted(DriveConstants.kRightInvertType);
     rightFollower.setInverted(DriveConstants.kRightInvertType);
 
-    drive.setMaxOutput(DriveConstants.kMaxOutput);
+    drive.setMaxOutput(-DriveConstants.kMaxOutput);
   }
 
   @Override
