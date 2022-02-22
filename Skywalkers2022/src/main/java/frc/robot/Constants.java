@@ -81,5 +81,15 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int kShooterMotorPortLeft = 20;
         public static final int kShooterMotorPortRight = 21;
+        public static final boolean invertedShooter = false;
+        public static final int kUnitsPerRevolution = 2048;
+
+        public static final double kStaticFriction = 0.1;
+        public static final double kVelocity = 0.1;
+        public static final double kAccel = 0.1;
+        
+        public static final double kP = 1;
+        public static final double kI = 0;
+        public static final double kD = 0;
     }
 }
