@@ -57,4 +57,8 @@ public final class Constants {
         public static final double kLowerArmSpeed = 0.2;
         public static final double kLiftArmSpeed = -0.1; // l neg
     }
+    public static final class ShooterConstants {
+        public static final int kShooterMotorPortLeft = 20;
+        public static final int kShooterMotorPortRight = 21;
+    }
 }
