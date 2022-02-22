@@ -28,8 +28,9 @@ public class RobotContainer {
   private Climber climber = new Climber();
   private Intake intake = new Intake();
   private Arm arm = new Arm();
-  XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
+  XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -38,15 +39,23 @@ public class RobotContainer {
         new RunCommand(
             () ->
               drive.arcadeDrive(
-                  -driverController.getRawAxis(OIConstants.kLeftY),
-                  driverController.getRawAxis(OIConstants.kRightX)),
+                  -driverController1.getRawAxis(OIConstants.kLeftY),
+                  driverController1.getRawAxis(OIConstants.kRightX)),
             drive));
+    
+    climber.setDefaultCommand(
+      new RunCommand(
+        () ->
+          climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
+        climber));
     
     // climber.setDefaultCommand(
     //   new RunCommand(
     //       () ->
-    //         climber.move(driverController.getRawAxis(OIConstants.kLeftY), driverController.getRawAxis(OIConstants.kRightY)),
-    //       climber)); //change controller constants
+    //         climber.move(driverController.getRawButton(OIConstants.kA), driverController.getRawButton(OIConstants.kB),
+    //         driverController.getRawButton(OIConstants.kX), driverController.getRawButton(OIConstants.kY),
+    //         driverController.getRawButton(OIConstants.kLeftBumper), driverController.getRawButton(OIConstants.kRightBumper),
+    //         driverController.getRawAxis(OIConstants.kRightY), driverController.getPOV()), climber));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -59,12 +68,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController, OIConstants.kIntakeButton.value).whenPressed(intake::intake);
-    new JoystickButton(driverController, OIConstants.kStopRollerButton.value).whenPressed(intake::stop);
-    new JoystickButton(driverController, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
-    new JoystickButton(driverController, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));
-    new JoystickButton(driverController, OIConstants.kLiftArmButton.value).whenReleased(() ->arm.stop());
-    new JoystickButton(driverController, OIConstants.kLowerArmButton.value).whenReleased(() -> arm.stop());
+    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(() -> intake.intake());
+    new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(() -> intake.stop());
+
+    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
+    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));
+    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenReleased(() -> arm.stop());
+    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenReleased(() -> arm.stop());
+
+    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenPressed(() -> climber.unlatchFirst());
+    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenPressed(() -> climber.unlatchSecond());
+    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenReleased(() -> climber.latchFirst());
+    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenReleased(() -> climber.latchSecond());
+    
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
