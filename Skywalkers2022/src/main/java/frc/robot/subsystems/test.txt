@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -16,25 +11,13 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-public class Shooter extends PIDSubsystem {
+public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
 
   WPI_TalonFX leftMaster;
   WPI_TalonFX rightFollower;
 
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(
-    ShooterConstants.kStaticFriction, 
-    ShooterConstants.kVelocity, 
-    ShooterConstants.kAccel);
-
-
   public Shooter() {
-    
-
-    super(
-        // The PIDController used by the subsystem
-        new PIDController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD));
-
     leftMaster = new WPI_TalonFX(ShooterConstants.kShooterMotorPortLeft);
     rightFollower = new WPI_TalonFX(ShooterConstants.kShooterMotorPortRight);
     leftMaster.configFactoryDefault();
@@ -52,6 +35,8 @@ public class Shooter extends PIDSubsystem {
 
   }
 
+  // test
+
   public void setVoltage(double volts) {
     leftMaster.setVoltage(volts); 
   }
@@ -61,36 +46,28 @@ public class Shooter extends PIDSubsystem {
   }
 
 
-  public double getSenPos() {
-    return leftMaster.getSelectedSensorPosition();
+  public double getSenPos(int id) {
+    return leftMaster.getSelectedSensorPosition(id);
   }
 
-  public double getSenVel() {
-    return leftMaster.getSelectedSensorVelocity();
+  public double getSenVel(int id) {
+    return leftMaster.getSelectedSensorVelocity(id);
   }
 
-  public double getPosRotations() {
-    return (double)getSenPos()/ShooterConstants.kUnitsPerRevolution;
+  public double getPosRotations(int id) {
+    return (double)getSenPos(id)/ShooterConstants.kUnitsPerRevolution;
   }
 
-  public double getRotPerSec() {
-    return (double)getSenVel()/ShooterConstants.kUnitsPerRevolution * 10;
+  public double getRotPerSec(int id) {
+    return (double)getSenVel(id)/ShooterConstants.kUnitsPerRevolution * 10;
   }
 
-  public double getRotPerMin() {
-    return (double)getSenVel() * 60.0;
-  }
-
-  @Override
-  public void useOutput(double output, double setpoint) {
-    double feedforward = m_feedforward.calculate(setpoint);
-    setVoltage(output + feedforward);
-    return;
+  public double getRotPerMin(int id) {
+    return (double)getSenVel(id) * 60.0;
   }
 
   @Override
-  public double getMeasurement() {
-    // Return the process variable measurement here
-    return getSenVel();
+  public void periodic() {
+    // This method will be called once per scheduler run
   }
 }
