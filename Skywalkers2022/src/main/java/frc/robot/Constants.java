@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.XboxController.Button;
 
 /**
@@ -50,6 +52,8 @@ public final class Constants {
         public static final TalonFXInvertType kRightInvertType = TalonFXInvertType.Clockwise;
 
         public static final double kMaxOutput = 0.3;
+        public static final TalonSRX PigeonIMUPort = null;
+        public static double kDistancePerPulseFactor;
     }
 
     public static final class ClimberConstants {
