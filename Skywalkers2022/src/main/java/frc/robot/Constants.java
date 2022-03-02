@@ -108,4 +108,11 @@ public final class Constants {
         public static boolean kInvert;
 
     }
+
+    public static final class IndexerConstants {
+
+        public static int kMotorPort;
+        public static boolean kInvert;
+        
+    }
 }
