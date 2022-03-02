@@ -69,9 +69,14 @@ public final class Constants {
     }
     
     public static final class IntakeConstants {
-        public static final int kMotorPort = 3;
+        public static final int kIntakeMotor = 3;
         public static final double kMaxOutput = 0.8;
         public static final boolean kIntakeInvert = true;
+        public static double kArmThreshold;
+        public static int kArmMotor;
+        public static boolean kArmInvert;
+        public static double kMaxArmThreshold;
+        public static double kMinArmThreshold;
     }
 
     public static final class ArmConstants {
