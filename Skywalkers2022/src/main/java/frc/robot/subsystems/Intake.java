@@ -74,7 +74,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isDeployed() {
-    if (getArmPosition() >= IntakeConstants.kArmThreshold) {
+    if (Math.abs(IntakeConstants.kMaxArmThreshold - getArmPosition()) >= IntakeConstants.kArmThreshold) {
       return true;
     } else {
       return false;
