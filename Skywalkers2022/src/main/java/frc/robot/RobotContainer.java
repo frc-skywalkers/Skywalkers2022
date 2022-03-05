@@ -11,8 +11,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.IndexBall;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.FunnelConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Funnel;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm;
@@ -28,6 +33,8 @@ public class RobotContainer {
   private Climber climber = new Climber();
   private Intake intake = new Intake();
   private Arm arm = new Arm();
+  private Indexer indexer = new Indexer();
+  private Funnel funnel = new Funnel();
 
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
@@ -49,6 +56,17 @@ public class RobotContainer {
         () ->
           climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
         climber));
+
+    indexer.setDefaultCommand(new IndexBall(indexer));
+
+    funnel.setDefaultCommand(
+      new RunCommand(
+        () -> {
+          if (intake.isDeployed()) {
+            funnel.setOutput(FunnelConstants.kFunnelSpeed);
+          }
+        }, funnel)
+    );
     
     // climber.setDefaultCommand(
     //   new RunCommand(

@@ -106,6 +106,7 @@ public final class Constants {
 
         public static int kMotorPort;
         public static boolean kInvert;
+        public static double kFunnelSpeed;
 
     }
 
@@ -113,6 +114,7 @@ public final class Constants {
 
         public static int kMotorPort;
         public static boolean kInvert;
+        public static double kIndexerSpeed;
         
     }
 }
