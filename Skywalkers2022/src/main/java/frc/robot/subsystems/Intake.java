@@ -25,20 +25,19 @@ public class Intake extends SubsystemBase {
 
     m_encoder = armMotor.getEncoder();
 
+    // Soft Limits <-- needs testing
+    armMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+    armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) IntakeConstants.kMaxArmThreshold);
+
+    armMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+    armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) IntakeConstants.kMinArmThreshold);
+
   }
 
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // soft limits <-- needs testing
-    if ((getArmPosition() > IntakeConstants.kMaxArmThreshold) && (getArmOutput() > 0.01)) {
-      setArmOutput(0);
-    }
-    if ((getArmPosition() < IntakeConstants.kMinArmThreshold) && (getArmPosition() < -0.01)) {
-      setArmOutput(0);
-    }
-
   }
 
   public void resetEncoder() {
