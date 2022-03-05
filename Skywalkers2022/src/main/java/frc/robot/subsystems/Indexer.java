@@ -5,23 +5,40 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
 
-  CANSparkMax indexerMotor = new CANSparkMax(IndexerConstants.kMotorPort, MotorType.kBrushless);
-  // implement color sensor
+  private CANSparkMax indexerMotor = new CANSparkMax(IndexerConstants.kMotorPort, MotorType.kBrushless);
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  
+  private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+  private final ColorMatch colorMatcher = new ColorMatch();
+  private final Color kBlue = new Color(0, 0, 0);
+  private final Color kRed = new Color(0, 0, 0);
   // implement beam breaker sensors
+
+  public enum BallColor {
+    BLUE, RED, UKNOWN;
+  }
 
   public Indexer() {
 
     indexerMotor.restoreFactoryDefaults();
     indexerMotor.setInverted(IndexerConstants.kInvert);
-
+   
+    colorMatcher.addColorMatch(kBlue);
+    colorMatcher.addColorMatch(kRed);
+    
   }
 
   @Override
@@ -33,16 +50,27 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(speed);
   }
 
-  public void getColor() {
-    // return color that color sensor detects
+  public BallColor getColor() {
+    Color detectedColor = colorSensor.getColor();
+    ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
+    if (match.color == kBlue) { 
+      return BallColor.BLUE; 
+    } else if (match.color == kRed) {
+      return BallColor.RED;
+    } else {
+      return BallColor.UKNOWN;
+    }
+
   }
 
-  public void isBallAtEntry() {
+  public boolean isBallAtEntry() {
     // return true if bottom beam breaker is broken
+    return false;
   }
   
-  public void isBallAtExit() {
+  public boolean isBallAtExit() {
     // return true if top beam breaker is broken
+    return false;
   }
 
 }
