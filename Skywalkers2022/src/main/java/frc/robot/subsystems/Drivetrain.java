@@ -43,7 +43,6 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
     
-
     leftMaster.configFactoryDefault();
     leftFollower.configFactoryDefault();
     rightMaster.configFactoryDefault();
@@ -78,8 +77,6 @@ public class Drivetrain extends SubsystemBase {
 
     resetDrivetrainEncoders();
     zeroHeading();
-
-    
   }
 
   @Override
@@ -91,8 +88,6 @@ public class Drivetrain extends SubsystemBase {
       getLeftEncoderDistance(), 
       getRightEncoderDistance());
     field.setRobotPose(getPose());
-
-
   }
 
   public void stop() {
@@ -174,7 +169,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   
-
   public Rotation2d getRotation2dPdg(){
     double YPR [] = new double [3];
     m_gyro.getYawPitchRoll(YPR);
@@ -186,15 +180,4 @@ public class Drivetrain extends SubsystemBase {
     m_gyro.getYawPitchRoll(YPR);
     return YPR[0];
   }
-
-  
-
-
-
-  
-
-
-
-
-
 }

@@ -8,7 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -16,11 +15,14 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 public class Shooter extends PIDSubsystem {
   /** Creates a new Shooter. */
-
-  WPI_TalonFX leftMaster;
-  WPI_TalonFX rightFollower;
+  private final WPI_TalonFX leftMaster = new WPI_TalonFX(ShooterConstants.kShooterMotorPortLeft);
+  private final WPI_TalonFX rightFollower = new WPI_TalonFX(ShooterConstants.kShooterMotorPortRight);
+  private final CANSparkMax hoodMotor = new CANSparkMax(ShooterConstants.kHoodMotorPort, MotorType.kBrushless);
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(
     ShooterConstants.kStaticFriction, 
@@ -29,19 +31,17 @@ public class Shooter extends PIDSubsystem {
 
 
   public Shooter() {
-    
-
     super(
         // The PIDController used by the subsystem
         new PIDController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD));
 
-    leftMaster = new WPI_TalonFX(ShooterConstants.kShooterMotorPortLeft);
-    rightFollower = new WPI_TalonFX(ShooterConstants.kShooterMotorPortRight);
     leftMaster.configFactoryDefault();
-    leftMaster.setInverted(ShooterConstants.invertedShooter);
+    leftMaster.setInverted(ShooterConstants.kShooterInvert);
     rightFollower.configFactoryDefault();
-    rightFollower.setInverted(ShooterConstants.invertedShooter);
+    rightFollower.setInverted(ShooterConstants.kShooterInvert);
     rightFollower.follow(leftMaster);
+    hoodMotor.restoreFactoryDefaults();
+    hoodMotor.setInverted(ShooterConstants.kHoodInvert);
 
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
@@ -49,7 +49,6 @@ public class Shooter extends PIDSubsystem {
 
     leftMaster.configAllSettings(configs);
     rightFollower.configAllSettings(configs);
-
   }
 
   public void setVoltage(double volts) {
@@ -70,15 +69,15 @@ public class Shooter extends PIDSubsystem {
   }
 
   public double getPosRotations() {
-    return (double)getSenPos()/ShooterConstants.kUnitsPerRevolution;
+    return (double) getSenPos()/ShooterConstants.kUnitsPerRevolution;
   }
 
   public double getRotPerSec() {
-    return (double)getSenVel()/ShooterConstants.kUnitsPerRevolution * 10;
+    return (double) getSenVel()/ShooterConstants.kUnitsPerRevolution * 10;
   }
 
   public double getRotPerMin() {
-    return (double)getSenVel() * 60.0;
+    return (double) getSenVel() * 60.0;
   }
 
   @Override

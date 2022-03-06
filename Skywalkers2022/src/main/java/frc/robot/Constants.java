@@ -90,7 +90,10 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int kShooterMotorPortLeft = 20;
         public static final int kShooterMotorPortRight = 21;
-        public static final boolean invertedShooter = false;
+        public static final int kHoodMotorPort = 0; // TODO: fix
+
+        public static final boolean kShooterInvert = false;
+        public static final boolean kHoodInvert = false; // TODO: fix
         public static final int kUnitsPerRevolution = 2048;
 
         public static final double kStaticFriction = 0.1;
@@ -103,7 +106,6 @@ public final class Constants {
     }
 
     public static final class FunnelConstants {
-
         public static int kMotorPort;
         public static boolean kInvert;
         public static double kFunnelSpeed;
@@ -111,7 +113,6 @@ public final class Constants {
     }
 
     public static final class IndexerConstants {
-
         public static int kMotorPort;
         public static boolean kInvert;
         public static double kIndexerSpeed;
