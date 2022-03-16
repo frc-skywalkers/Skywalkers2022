@@ -70,7 +70,7 @@ public final class Constants {
     
     public static final class IntakeConstants {
         public static final int kIntakeMotor = 3;
-        public static final double kMaxOutput = 0.8;
+        public static final double kMaxOutput = 0.0;
         public static final boolean kIntakeInvert = true;
         public static double kArmThreshold;
         public static int kArmMotor;
@@ -80,7 +80,7 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final int kMotorPort = 5;
+        public static final int kMotorPort = 23;
         public static final double kMaxOutput = 0.3;
         public static final boolean kArmInvert = false;
         public static final double kLowerArmSpeed = 0.2;
@@ -90,32 +90,34 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int kShooterMotorPortLeft = 20;
         public static final int kShooterMotorPortRight = 21;
-        public static final int kHoodMotorPort = 0; // TODO: fix
+        public static final int kHoodMotorPort = 22; // TODO: fix
 
         public static final boolean kShooterInvert = false;
         public static final boolean kHoodInvert = false; // TODO: fix
         public static final int kUnitsPerRevolution = 2048;
 
-        public static final double kStaticFriction = 0.1;
-        public static final double kVelocity = 0.1;
-        public static final double kAccel = 0.1;
+        public static final double kStaticFriction = 0.0;
+        public static final double kVelocity = 0.0;
+        public static final double kAccel = 0.0;
         
-        public static final double kP = 1;
+        public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
     }
 
     public static final class FunnelConstants {
-        public static int kMotorPort;
-        public static boolean kInvert;
-        public static double kFunnelSpeed;
+
+        public static int kMotorPort = 4;
+        public static boolean kInvert = true;
+        public static double kFunnelSpeed = 0.3;
 
     }
 
     public static final class IndexerConstants {
-        public static int kMotorPort;
-        public static boolean kInvert;
-        public static double kIndexerSpeed;
+
+        public static int kMotorPort = 6;
+        public static boolean kInvert = true;
+        public static double kIndexerSpeed = 0.;
         
     }
 }

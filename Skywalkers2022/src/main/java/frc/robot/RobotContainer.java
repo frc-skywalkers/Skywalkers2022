@@ -17,9 +17,11 @@ import frc.robot.Constants.FunnelConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Funnel;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Arm;
 
 /**
@@ -29,12 +31,14 @@ import frc.robot.subsystems.Arm;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private Drivetrain drive = new Drivetrain(); 
+  // private Drivetrain drive = new Drivetrain(); 
   private Climber climber = new Climber();
   private Intake intake = new Intake();
   private Arm arm = new Arm();
   private Indexer indexer = new Indexer();
   private Funnel funnel = new Funnel();
+  private Hood hood = new Hood();
+  private Shooter shooter = new Shooter();
 
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
@@ -43,30 +47,42 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drive.setDefaultCommand( 
-        new RunCommand(
-            () ->
-              drive.arcadeDrive(
-                  -driverController1.getRawAxis(OIConstants.kLeftY),
-                  driverController1.getRawAxis(OIConstants.kRightX)),
-            drive));
+    // drive.setDefaultCommand( 
+    //     new RunCommand(
+    //         () ->
+    //           drive.arcadeDrive(
+    //               -driverController1.getRawAxis(OIConstants.kLeftY),
+    //               driverController1.getRawAxis(OIConstants.kRightX)),
+    //         drive));
     
-    climber.setDefaultCommand(
-      new RunCommand(
-        () ->
-          climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
-        climber));
+    // climber.setDefaultCommand(
+    //   new RunCommand(
+    //     () ->
+    //       climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
+    //     climber));
 
-    indexer.setDefaultCommand(new IndexBall(indexer));
-
-    funnel.setDefaultCommand(
+    hood.setDefaultCommand(
       new RunCommand(
-        () -> {
-          if (intake.isDeployed()) {
-            funnel.setOutput(FunnelConstants.kFunnelSpeed);
-          }
-        }, funnel)
-    );
+        () -> 
+          hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.1), 
+      hood));
+
+    shooter.setDefaultCommand(
+      new RunCommand(
+        () -> 
+          shooter.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
+        shooter));
+
+    // indexer.setDefaultCommand(new IndexBall(indexer));
+
+    // funnel.setDefaultCommand(
+    //   new RunCommand(
+    //     () -> {
+    //       if (intake.isDeployed()) {
+    //         funnel.setOutput(FunnelConstants.kFunnelSpeed);
+    //       }
+    //     }, funnel)
+    // );
     
     // climber.setDefaultCommand(
     //   new RunCommand(
@@ -87,18 +103,34 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(() -> intake.intake());
-    new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(() -> intake.stopRollers());
+    // new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(() -> intake.intake());
+    // new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(() -> intake.stopRollers());
 
-    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
-    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));
-    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenReleased(() -> arm.stop());
-    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenReleased(() -> arm.stop());
+    new JoystickButton(driverController2, OIConstants.kIntakeButton.value).whenPressed(
+      () -> {
+        // intake.intake();
+        funnel.setOutput(FunnelConstants.kFunnelSpeed);
+        indexer.setOutput(IndexerConstants.kIndexerSpeed);
+      }
+    );
 
-    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenPressed(() -> climber.unlatchFirst());
-    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenPressed(() -> climber.unlatchSecond());
-    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenReleased(() -> climber.latchFirst());
-    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenReleased(() -> climber.latchSecond());
+    new JoystickButton(driverController2, OIConstants.kStopRollerButton.value).whenPressed(
+      () -> {
+        // intake.stopRollers();
+        funnel.setOutput(0);
+        indexer.setOutput(0);
+      }
+    );
+
+    // new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
+    // new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));
+    // new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenReleased(() -> arm.stop());
+    // new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenReleased(() -> arm.stop());
+
+    // new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenPressed(() -> climber.unlatchFirst());
+    // new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenPressed(() -> climber.unlatchSecond());
+    // new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenReleased(() -> climber.latchFirst());
+    // new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenReleased(() -> climber.latchSecond());
     
 
   /**

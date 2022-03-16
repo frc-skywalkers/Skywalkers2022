@@ -6,23 +6,22 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter extends PIDSubsystem {
   /** Creates a new Shooter. */
   private final WPI_TalonFX leftMaster = new WPI_TalonFX(ShooterConstants.kShooterMotorPortLeft);
   private final WPI_TalonFX rightFollower = new WPI_TalonFX(ShooterConstants.kShooterMotorPortRight);
-  private final CANSparkMax hoodMotor = new CANSparkMax(ShooterConstants.kHoodMotorPort, MotorType.kBrushless);
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(
     ShooterConstants.kStaticFriction, 
@@ -37,11 +36,14 @@ public class Shooter extends PIDSubsystem {
 
     leftMaster.configFactoryDefault();
     leftMaster.setInverted(ShooterConstants.kShooterInvert);
+    leftMaster.setNeutralMode(NeutralMode.Coast);
+
     rightFollower.configFactoryDefault();
-    rightFollower.setInverted(ShooterConstants.kShooterInvert);
     rightFollower.follow(leftMaster);
-    hoodMotor.restoreFactoryDefaults();
-    hoodMotor.setInverted(ShooterConstants.kHoodInvert);
+    rightFollower.setInverted(InvertType.OpposeMaster);
+    rightFollower.setNeutralMode(NeutralMode.Coast);
+
+    
 
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
@@ -49,6 +51,8 @@ public class Shooter extends PIDSubsystem {
 
     leftMaster.configAllSettings(configs);
     rightFollower.configAllSettings(configs);
+
+    
   }
 
   public void setVoltage(double volts) {
@@ -80,6 +84,7 @@ public class Shooter extends PIDSubsystem {
     return (double) getSenVel() * 60.0;
   }
 
+  
   @Override
   public void useOutput(double output, double setpoint) {
     double feedforward = m_feedforward.calculate(setpoint);
@@ -91,5 +96,11 @@ public class Shooter extends PIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     return getSenVel();
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+    SmartDashboard.putNumber("Shooter Velocity", getRotPerMin());
   }
 }
