@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -22,6 +23,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterV2;
 import frc.robot.subsystems.Arm;
 
 /**
@@ -38,7 +40,8 @@ public class RobotContainer {
   private Indexer indexer = new Indexer();
   private Funnel funnel = new Funnel();
   private Hood hood = new Hood();
-  private Shooter shooter = new Shooter();
+  // private Shooter shooter = new Shooter();
+  private ShooterV2 shooterV2 = new ShooterV2();
 
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
@@ -67,11 +70,17 @@ public class RobotContainer {
           hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.1), 
       hood));
 
-    shooter.setDefaultCommand(
-      new RunCommand(
-        () -> 
-          shooter.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
-        shooter));
+    // shooter.setDefaultCommand(
+    //   new RunCommand(
+    //     () -> 
+    //       shooter.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
+    //     shooter));
+
+    // shooterV2.setDefaultCommand(
+    //   new RunCommand(
+    //     () -> 
+    //       shooterV2.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
+    //     shooterV2));
 
     // indexer.setDefaultCommand(new IndexBall(indexer));
 
@@ -121,6 +130,10 @@ public class RobotContainer {
         indexer.setOutput(0);
       }
     );
+
+    new JoystickButton(driverController2, Button.kX.value).whenPressed(new RunCommand(
+      () -> shooterV2.setSpeed(30), shooterV2)); 
+    new JoystickButton(driverController2, Button.kY.value).whenPressed(new InstantCommand(shooterV2::stopShoot, shooterV2));
 
     // new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
     // new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));

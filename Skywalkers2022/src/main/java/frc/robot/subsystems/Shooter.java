@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +28,8 @@ public class Shooter extends PIDSubsystem {
     ShooterConstants.kStaticFriction, 
     ShooterConstants.kVelocity, 
     ShooterConstants.kAccel);
+
+  // private BangBangController bang = new BangBangController();
 
 
   public Shooter() {
@@ -73,11 +76,11 @@ public class Shooter extends PIDSubsystem {
   }
 
   public double getPosRotations() {
-    return (double) getSenPos()/ShooterConstants.kUnitsPerRevolution;
+    return (double) getSenPos() * ShooterConstants.kDistancePerPulse;
   }
 
   public double getRotPerSec() {
-    return (double) getSenVel()/ShooterConstants.kUnitsPerRevolution * 10;
+    return (double) getSenVel() * ShooterConstants.kDistancePerPulse * 10;
   }
 
   public double getRotPerMin() {

@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
 /**
@@ -94,7 +95,7 @@ public final class Constants {
 
         public static final boolean kShooterInvert = false;
         public static final boolean kHoodInvert = false; // TODO: fix
-        public static final int kUnitsPerRevolution = 2048;
+        public static final double kDistancePerPulse = Units.inchesToMeters(4) * Math.PI / 2048;
 
         public static final double kStaticFriction = 0.0;
         public static final double kVelocity = 0.0;
@@ -117,7 +118,7 @@ public final class Constants {
 
         public static int kMotorPort = 6;
         public static boolean kInvert = true;
-        public static double kIndexerSpeed = 0.;
+        public static double kIndexerSpeed = 0.5;
         
     }
 }
