@@ -70,8 +70,8 @@ public final class Constants {
     }
     
     public static final class IntakeConstants {
-        public static final int kIntakeMotor = 3;
-        public static final double kMaxOutput = 0.0;
+        public static final int kIntakeMotor = 8;
+        public static final double kMaxOutput = 0.5;
         public static final boolean kIntakeInvert = true;
         public static double kArmThreshold;
         public static int kArmMotor;
@@ -84,7 +84,7 @@ public final class Constants {
         public static final int kMotorPort = 23;
         public static final double kMaxOutput = 0.3;
         public static final boolean kArmInvert = false;
-        public static final double kLowerArmSpeed = 0.2;
+        public static final double kLowerArmSpeed = 0.1;
         public static final double kLiftArmSpeed = -0.1; // l neg
     }
 
@@ -108,7 +108,7 @@ public final class Constants {
 
     public static final class FunnelConstants {
 
-        public static int kMotorPort = 4;
+        public static int kMotorPort = 24;
         public static boolean kInvert = true;
         public static double kFunnelSpeed = 0.3;
 
