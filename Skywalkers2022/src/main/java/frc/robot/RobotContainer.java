@@ -4,15 +4,33 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.BringShooterToSpeed;
+import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.IndexBall;
+import frc.robot.commands.MVPAuto;
+import frc.robot.commands.MoveArmToPosition;
+import frc.robot.commands.MoveHood;
+import frc.robot.commands.MoveHoodToPosition;
+import frc.robot.commands.Shoot;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.FunnelConstants;
 import frc.robot.Constants.IndexerConstants;
@@ -43,8 +61,11 @@ public class RobotContainer {
   // private Shooter shooter = new Shooter();
   private ShooterV2 shooterV2 = new ShooterV2();
 
+  public static double[][] ranges = {{0,20}, {50, 20}, {100, 25}};
+  public static int rangeIndex = 0;
+
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
-  // XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
+  XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
 
   // Test web hook
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -70,11 +91,11 @@ public class RobotContainer {
     //       climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
     //     climber));
 
-    // hood.setDefaultCommand(
-    //   new RunCommand(
-    //     () -> 
-    //       hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.1), 
-    //   hood));
+    hood.setDefaultCommand(
+      new RunCommand(
+        () -> 
+          hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2), 
+      hood));
 
     // shooter.setDefaultCommand(
     //   new RunCommand(
@@ -82,11 +103,13 @@ public class RobotContainer {
     //       shooter.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
     //     shooter));
 
-    // shooterV2.setDefaultCommand(
-    //   new RunCommand(
-    //     () -> 
-    //       shooterV2.setVoltage(-driverController2.getRawAxis(OIConstants.kRightY) * 12), 
-    //     shooterV2));
+    indexer.setDefaultCommand(
+      new RunCommand(
+        () -> 
+          indexer.setOutput(-driverController2.getRawAxis(OIConstants.kRightY) * 0.7), 
+        indexer));
+
+    // indexer.setDefaultCommand(new IndexBall(indexer));
 
     // indexer.setDefaultCommand(new IndexBall(indexer));
 
@@ -118,33 +141,100 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(() -> intake.intake());
-    // new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(() -> intake.stopRollers());
 
-    // new JoystickButton(driverController2, OIConstants.kIntakeButton.value).whenPressed(
-    //   () -> {
-    //     intake.intake();
-    //     funnel.setOutput(FunnelConstants.kFunnelSpeed);
-    //     indexer.setOutput(IndexerConstants.kIndexerSpeed);
-    //   }
-    // );
+    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
 
-    // new JoystickButton(driverController2, OIConstants.kStopRollerButton.value).whenPressed(
-    //   () -> {
-    //     intake.stopRollers();
-    //     funnel.setOutput(0);
-    //     indexer.setOutput(0);
-    //   }
-    // );
+    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
 
-    // new JoystickButton(driverController2, Button.kX.value).whenPressed(new RunCommand(
-    //   () -> shooterV2.setSpeed(30), shooterV2)); 
+    // new JoystickButton(driverController2, driverController2.getPOV())
+
+    new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(
+      () -> {
+        intake.stopRollers();
+        // funnel.setOutput(0);
+        indexer.setOutput(0);
+      },
+      indexer, intake, funnel));
+
+    new POVButton(driverController2, 0).whenPressed(() -> {
+      rangeIndex = (rangeIndex + 1)%3;
+      System.out.println("D-PAD Top");
+      System.out.println("Range Index " + rangeIndex);
+      switch (rangeIndex) {
+        case 0: SmartDashboard.putString("Shooter Range", "Low");
+                break;
+        case 1: SmartDashboard.putString("Shooter Range", "Mid");
+                break;
+        case 2: SmartDashboard.putString("Shooter Range", "High");
+                break;
+        default: SmartDashboard.putString("Shooter Range", "Unknown");
+                break;
+        
+      }
+    });
+    new POVButton(driverController2, 180).whenPressed(() -> {
+      rangeIndex = (rangeIndex + 2)%3;
+      System.out.println("D-PAD Bottom");
+      System.out.println("Range Index " + rangeIndex);
+      switch (rangeIndex) {
+        case 0: SmartDashboard.putString("Shooter Range", "Low");
+                break;
+        case 1: SmartDashboard.putString("Shooter Range", "Mid");
+                break;
+        case 2: SmartDashboard.putString("Shooter Range", "High");
+                break;
+        default: SmartDashboard.putString("Shooter Range", "Unknown");
+                break;
+        
+      }
+    });
+
+    // new JoystickButton(driverController2, 8).whenPressed(
+    //   new SequentialCommandGroup(
+    //     new ParallelCommandGroup(
+    //       new MoveHood(hood, 50),
+    //       new BringShooterToSpeed(shooterV2, 20)
+    //     ),
+    //     new Shoot(indexer),
+    //     new InstantCommand(() -> shooterV2.setVoltage(0.0))
+    // ));
+
+    // new JoystickButton(driverController2, Button.kX.value).whenPressed(new BringShooterToSpeed(shooterV2, 20)); 
     // new JoystickButton(driverController2, Button.kY.value).whenPressed(new InstantCommand(shooterV2::stopShoot, shooterV2));
+    
+    new JoystickButton(driverController2, Button.kX.value).whenPressed(
+      new MoveHood(hood).alongWith(
+      new BringShooterToSpeed(shooterV2)
+      // .raceWith(
+      // new SequentialCommandGroup(
+        // new WaitUntilCommand(() -> shooterV2.atSpeed(1)),
+        // new WaitUntilCommand(() -> hood.atPosition(1)),
+        // new RunCommand(() -> indexer.setOutput(IndexerConstants.kIndexerSpeed), indexer).withTimeout(2),
+        // new InstantCommand(() -> indexer.setOutput(0))))
+      )
+    ); 
+
+    new JoystickButton(driverController2, Button.kA.value).whenPressed(
+        new RunCommand(
+          () -> indexer.setOutput(0.9),
+        indexer).withTimeout(2)
+    );
+
+    new JoystickButton(driverController2, Button.kB.value).whenPressed(
+      new InstantCommand(() -> shooterV2.setVoltage(0), shooterV2)
+    );
+    
+    
+    // new JoystickButton(driverController2, Button.kX.value).whenPressed(new MoveHood(hood, 50)); 
+    // new JoystickButton(driverController2, Button.kY.value).whenPressed(new InstantCommand(() -> hood.setOutput(0), hood));
+    
 
     // new JoystickButton(driverController2, OIConstants.kLiftArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLiftArmSpeed));
     // new JoystickButton(driverController2, OIConstants.kLowerArmButton.value).whileHeld(() -> arm.arm(ArmConstants.kLowerArmSpeed));
     // new JoystickButton(driverController2, OIConstants.kLiftArmButton.value).whenReleased(() -> arm.stop());
     // new JoystickButton(driverController2, OIConstants.kLowerArmButton.value).whenReleased(() -> arm.stop());
+    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenPressed(new MoveArmToPosition(arm, 0, 0.1, 0.25));
+    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenPressed(new MoveArmToPosition(arm, 14, 0.05, 0.25));
 
     // new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenPressed(() -> climber.unlatchFirst());
     // new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenPressed(() -> climber.unlatchSecond());
@@ -160,6 +250,7 @@ public class RobotContainer {
   }
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    // return new DriveForDistance(drive, Units.feetToMeters(-5), 1, 0.05);
+    return new MVPAuto(shooterV2, indexer, drive);
   }
 }

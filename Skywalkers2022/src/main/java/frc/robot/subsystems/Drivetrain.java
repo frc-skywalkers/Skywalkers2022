@@ -96,13 +96,16 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double fwd, double rot) {
+    // System.out.println("Called");
+    // System.out.println("FWD" + fwd);
+    // System.out.println("ROT" + rot);
     drive.arcadeDrive(fwd, rot);
   }
 
-  public void setLeft(double speed) {
-    // System.out.println("Called");
-    leftMaster.set(TalonFXControlMode.PercentOutput, speed * 0.1);
-  }
+  // public void setLeft(double speed) {
+  //   // System.out.println("Called");
+  //   leftMaster.set(TalonFXControlMode.PercentOutput, speed * 0.1);
+  // }
 
   public void setMaxOutput(double maxOutput) {
     drive.setMaxOutput(maxOutput);
@@ -113,29 +116,29 @@ public class Drivetrain extends SubsystemBase {
   // }
 
 
-  // public double getAverageEncoderDistance() {
-  //   return (getLeftEncoderDistance() + getRightEncoderDistance()) / 2.0;
-  // }
+  public double getAverageEncoderDistance() {
+    return (getLeftEncoderDistance() + getRightEncoderDistance()) / 2.0;
+  }
 
-  // public double getLeftEncoderDistance(){
-  //   return leftMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
+  public double getLeftEncoderDistance(){
+    return leftMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
     
-  // }
+  }
 
-  // public double getRightEncoderDistance(){
-  //   return rightMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
+  public double getRightEncoderDistance(){
+    return rightMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
     
-  // }
+  }
 
-  // public double getRightEncoderRate() {
-  //     return rightMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
+  public double getRightEncoderRate() {
+      return rightMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
     
-  // }
+  }
 
-  // public double getLeftEncoderRate() {
-  //     return leftMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
+  public double getLeftEncoderRate() {
+      return leftMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
     
-  // }
+  }
 
 
   // public Pose2d getPose() {
@@ -154,10 +157,10 @@ public class Drivetrain extends SubsystemBase {
   //   drive.feed();
   // }
 
-  // public void resetDrivetrainEncoders(){
-  //   leftMaster.setSelectedSensorPosition(0);
-  //   rightMaster.setSelectedSensorPosition(0);
-  // }
+  public void resetDrivetrainEncoders(){
+    leftMaster.setSelectedSensorPosition(0);
+    rightMaster.setSelectedSensorPosition(0);
+  }
 
   // public void resetOdometry(Pose2d pose) {
   //   resetDrivetrainEncoders();

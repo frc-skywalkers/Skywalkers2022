@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterV2 extends SubsystemBase {
@@ -61,8 +62,9 @@ public class ShooterV2 extends SubsystemBase {
   // }
 
   public void setSpeed(double rps) {
+    double error = rps - getRPS();
     double feedforward = m_feedforward.calculate(rps);
-    setVoltage(feedforward);
+    setVoltage(error * 0.05 + feedforward);
   }
 
   public void setVoltage(double volts) {
@@ -71,6 +73,22 @@ public class ShooterV2 extends SubsystemBase {
 
   public void stopShoot() {
     leftMaster.setVoltage(0.000);
+  }
+
+  public boolean atSpeed(double targetSpeed, double tolerance) {
+    if (Math.abs(getRPS() - targetSpeed) < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean atSpeed( double tolerance) {
+    if (Math.abs(getRPS() - RobotContainer.ranges[RobotContainer.rangeIndex][1]) < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 

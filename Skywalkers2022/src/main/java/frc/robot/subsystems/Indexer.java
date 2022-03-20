@@ -8,9 +8,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
@@ -19,9 +21,11 @@ public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
 
   private CANSparkMax indexerMotor = new CANSparkMax(IndexerConstants.kMotorPort, MotorType.kBrushless);
-  // private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+
+  private RelativeEncoder indexerEncoder;
   
-  // private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
+  private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
   // private final ColorMatch colorMatcher = new ColorMatch();
   // private final Color kBlue = new Color(0, 0, 0);
   // private final Color kRed = new Color(0, 0, 0);
@@ -35,6 +39,7 @@ public class Indexer extends SubsystemBase {
 
     indexerMotor.restoreFactoryDefaults();
     indexerMotor.setInverted(IndexerConstants.kInvert);
+    indexerEncoder = indexerMotor.getEncoder();
    
     // colorMatcher.addColorMatch(kBlue);
     // colorMatcher.addColorMatch(kRed);
@@ -44,10 +49,31 @@ public class Indexer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Proximity", colorSensor.getProximity());
+    SmartDashboard.putNumber("Indexer Velocity", getVelocity());
   }
 
   public void setOutput(double speed) {
     indexerMotor.set(speed);
+    SmartDashboard.putNumber("Indxer Current", indexerMotor.getOutputCurrent());
+  }
+
+  public void moveUntilBall(double speed) {
+    double proximity = colorSensor.getProximity();
+    if (proximity < 300) {
+      setOutput(speed);
+    } else {
+      setOutput(0);
+    }
+  }
+
+  public void moveUntilNoBall(double speed) {
+    double proximity = colorSensor.getProximity();
+    if (proximity > 300) {
+      setOutput(speed);
+    } else {
+      setOutput(0);
+    }
   }
 
   // public BallColor getColor() {
@@ -69,8 +95,16 @@ public class Indexer extends SubsystemBase {
   }
   
   public boolean isBallAtExit() {
-    // return true if top beam breaker is broken
-    return false;
+    double proximity = colorSensor.getProximity();
+    if (proximity > 150) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  public double getVelocity() {
+    return indexerEncoder.getVelocity();
   }
 
 }

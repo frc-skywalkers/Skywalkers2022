@@ -49,12 +49,15 @@ public final class Constants {
         public static final int kRightMasterPort = 1;
         public static final int kRightFollowerPort = 2;
 
-        public static final TalonFXInvertType kLeftInvertType = TalonFXInvertType.CounterClockwise;
-        public static final TalonFXInvertType kRightInvertType = TalonFXInvertType.Clockwise;
+        public static final TalonFXInvertType kLeftInvertType = TalonFXInvertType.Clockwise;
+        public static final TalonFXInvertType kRightInvertType = TalonFXInvertType.CounterClockwise;
 
-        public static final double kMaxOutput = 0.3;
+        public static final double kMaxOutput = 0.6;
         public static final TalonSRX PigeonIMUPort = null;
-        public static double kDistancePerPulseFactor;
+        public static final double kGearRatio = 11.0/60.0 * 16.0/32.0;
+        public static final double kTicksPerRotation = 2048;
+        public static final double kWheelDiameter = Units.inchesToMeters(6.0);
+        public static final double kDistancePerPulseFactor = kWheelDiameter * Math.PI * kGearRatio / 2048;
     }
 
     public static final class ClimberConstants {
@@ -71,7 +74,7 @@ public final class Constants {
     
     public static final class IntakeConstants {
         public static final int kIntakeMotor = 8;
-        public static final double kMaxOutput = 0.5;
+        public static final double kMaxOutput = 0.8;
         public static final boolean kIntakeInvert = true;
         public static double kArmThreshold;
         public static int kArmMotor;
@@ -116,9 +119,9 @@ public final class Constants {
 
     public static final class IndexerConstants {
 
-        public static int kMotorPort = 6;
+        public static int kMotorPort = 25;
         public static boolean kInvert = true;
-        public static double kIndexerSpeed = 0.5;
+        public static double kIndexerSpeed = 0.7;
         
     }
 }

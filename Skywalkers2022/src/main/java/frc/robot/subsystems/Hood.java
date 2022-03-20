@@ -6,11 +6,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class Hood extends SubsystemBase {
@@ -24,6 +26,11 @@ public class Hood extends SubsystemBase {
     hoodMotor.setInverted(ShooterConstants.kHoodInvert);
     hoodEncoder = hoodMotor.getEncoder();
     hoodEncoder.setPosition(0);
+    hoodMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+    hoodMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    hoodMotor.setSoftLimit(SoftLimitDirection.kForward, 150);
+    hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    
   }
 
   @Override
@@ -37,7 +44,28 @@ public class Hood extends SubsystemBase {
   }
 
   public void setOutput(double speed) {
-    hoodMotor.set(MathUtil.clamp(speed, -0.1, 0.1));
+    hoodMotor.set(MathUtil.clamp(speed, -0.4, 0.4));
+  }
+
+  public void setPosition(double target) {
+    double error = target - getPosition();
+    setOutput(error * 0.4);
+  }
+
+  public boolean atPosition(double target, double tolerance) {
+    if (Math.abs(target - getPosition()) < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean atPosition( double tolerance) {
+    if (Math.abs(RobotContainer.ranges[RobotContainer.rangeIndex][0] - getPosition()) < tolerance) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
