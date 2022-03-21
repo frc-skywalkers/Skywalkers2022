@@ -6,11 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.ShooterV2;
@@ -20,17 +17,15 @@ import frc.robot.subsystems.ShooterV2;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class MVPAuto extends SequentialCommandGroup {
   /** Creates a new MVPAuto. */
+
   public MVPAuto(ShooterV2 shooter, Indexer indexer, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ParallelCommandGroup(
-      new BringShooterToSpeed(shooter, 20).raceWith(
-      new SequentialCommandGroup(
-        new WaitUntilCommand(() -> shooter.atSpeed(19, 1)),
-        new RunCommand(() -> indexer.setOutput(IndexerConstants.kIndexerSpeed), indexer).withTimeout(2),
-        new InstantCommand(() -> indexer.setOutput(0)),
-        new InstantCommand(() -> { System.out.println("Done");})
-      )
-    )), new DriveForDistance(drivetrain, Units.feetToMeters(-5), 1, 0.1));
+    addCommands(new SequentialCommandGroup(
+      new BringShooterToSpeed(shooter, 20),
+      new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
+      new InstantCommand(() -> indexer.off()),
+      new InstantCommand(() -> {System.out.println("Done");})
+    ), new DriveForDistance(drivetrain, Units.feetToMeters(-5), 1, 0.1));
   }
 }

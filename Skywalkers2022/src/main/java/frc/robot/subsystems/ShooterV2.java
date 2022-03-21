@@ -4,18 +4,15 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterV2 extends SubsystemBase {
@@ -26,7 +23,8 @@ public class ShooterV2 extends SubsystemBase {
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0, 12/32.8, 0);
 
-  private BangBangController controller = new BangBangController();
+  private double targetRPS = 0;
+  private boolean stop = false;
 
   public ShooterV2() {
     leftMaster.configFactoryDefault();
@@ -44,53 +42,42 @@ public class ShooterV2 extends SubsystemBase {
 
     leftMaster.configAllSettings(configs);
     rightFollower.configAllSettings(configs);
-    controller.setTolerance(1);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (stop) {
+      setVoltage(0);
+    } else {
+      double error = targetRPS - getRPS();
+      double feedforward = m_feedforward.calculate(targetRPS);
+      setVoltage(error * 0.05 + feedforward);
+    }
+
     SmartDashboard.putNumber("Shooter Velocity", getRPS());
   }
 
-  // public void setSpeed(double rps) {
-  //   System.out.println("Called");
-  //   double feedforward = m_feedforward.calculate(rps);
-  //   System.out.println("Setting voltage to:" + controller.calculate(getRPS(), rps) * 6);
-  //   System.out.println(rps);
-  //   setVoltage(controller.calculate(getRPS(), rps) * 6);
-  // }
-
   public void setSpeed(double rps) {
-    double error = rps - getRPS();
-    double feedforward = m_feedforward.calculate(rps);
-    setVoltage(error * 0.05 + feedforward);
+    targetRPS = rps;
+    stop = false;
+  }
+
+  public void stopShoot() {
+    stop = true;
   }
 
   public void setVoltage(double volts) {
     leftMaster.setVoltage(volts); 
   }
 
-  public void stopShoot() {
-    leftMaster.setVoltage(0.000);
-  }
-
   public boolean atSpeed(double targetSpeed, double tolerance) {
-    if (Math.abs(getRPS() - targetSpeed) < tolerance) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(targetSpeed - getRPS()) < tolerance;
   }
 
-  public boolean atSpeed( double tolerance) {
-    if (Math.abs(getRPS() - RobotContainer.ranges[RobotContainer.rangeIndex][1]) < tolerance) {
-      return true;
-    } else {
-      return false;
-    }
+  public boolean atSpeed(double tolerance) {
+    return atSpeed(targetRPS, tolerance);
   }
-
 
   public double getPos() {
     return leftMaster.getSelectedSensorPosition();
@@ -101,14 +88,14 @@ public class ShooterV2 extends SubsystemBase {
   }
 
   public double getRotations() {
-    return (double) getPos() * ShooterConstants.kDistancePerPulse;
+    return getPos() * ShooterConstants.kDistancePerPulse;
   }
 
   public double getRPS() {
-    return (double) getVel() * ShooterConstants.kDistancePerPulse * 10;
+    return getVel() * ShooterConstants.kDistancePerPulse * 10;
   }
 
   public double getRPM() {
-    return (double) getVel() * 60.0;
+    return getVel() * 60;
   }
 }

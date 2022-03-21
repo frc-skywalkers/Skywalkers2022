@@ -143,23 +143,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
 
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
-
-    // new JoystickButton(driverController2, driverController2.getPOV())
 
     new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(
       () -> {
         intake.stopRollers();
         // funnel.setOutput(0);
-        indexer.setOutput(0);
+        indexer.off();
       },
       indexer, intake, funnel));
 
     new POVButton(driverController2, 0).whenPressed(() -> {
-      rangeIndex = (rangeIndex + 1)%3;
+      rangeIndex = (rangeIndex + 1) % 3;
       System.out.println("D-PAD Top");
       System.out.println("Range Index " + rangeIndex);
       switch (rangeIndex) {
@@ -171,11 +168,11 @@ public class RobotContainer {
                 break;
         default: SmartDashboard.putString("Shooter Range", "Unknown");
                 break;
-        
       }
     });
+    
     new POVButton(driverController2, 180).whenPressed(() -> {
-      rangeIndex = (rangeIndex + 2)%3;
+      rangeIndex = (rangeIndex + 2) % 3;
       System.out.println("D-PAD Bottom");
       System.out.println("Range Index " + rangeIndex);
       switch (rangeIndex) {
@@ -187,7 +184,6 @@ public class RobotContainer {
                 break;
         default: SmartDashboard.putString("Shooter Range", "Unknown");
                 break;
-        
       }
     });
 
@@ -198,34 +194,28 @@ public class RobotContainer {
     //       new BringShooterToSpeed(shooterV2, 20)
     //     ),
     //     new Shoot(indexer),
-    //     new InstantCommand(() -> shooterV2.setVoltage(0.0))
+    //     new InstantCommand(() -> shooterV2.stopShoot();)
     // ));
 
     // new JoystickButton(driverController2, Button.kX.value).whenPressed(new BringShooterToSpeed(shooterV2, 20)); 
     // new JoystickButton(driverController2, Button.kY.value).whenPressed(new InstantCommand(shooterV2::stopShoot, shooterV2));
     
     new JoystickButton(driverController2, Button.kX.value).whenPressed(
-      new MoveHood(hood).alongWith(
-      new BringShooterToSpeed(shooterV2)
-      // .raceWith(
+      new MoveHood(hood, ranges[rangeIndex][0]).alongWith(
+      new BringShooterToSpeed(shooterV2, ranges[rangeIndex][1]))
+      // .andThen(
       // new SequentialCommandGroup(
-        // new WaitUntilCommand(() -> shooterV2.atSpeed(1)),
-        // new WaitUntilCommand(() -> hood.atPosition(1)),
-        // new RunCommand(() -> indexer.setOutput(IndexerConstants.kIndexerSpeed), indexer).withTimeout(2),
-        // new InstantCommand(() -> indexer.setOutput(0))))
-      )
-    ); 
+        // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
+        // new InstantCommand(() -> indexer.off())))
+    );
 
     new JoystickButton(driverController2, Button.kA.value).whenPressed(
-        new RunCommand(
-          () -> indexer.setOutput(0.9),
-        indexer).withTimeout(2)
+        new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2)
     );
 
     new JoystickButton(driverController2, Button.kB.value).whenPressed(
-      new InstantCommand(() -> shooterV2.setVoltage(0), shooterV2)
+      new InstantCommand(() -> shooterV2.stopShoot(), shooterV2)
     );
-    
     
     // new JoystickButton(driverController2, Button.kX.value).whenPressed(new MoveHood(hood, 50)); 
     // new JoystickButton(driverController2, Button.kY.value).whenPressed(new InstantCommand(() -> hood.setOutput(0), hood));
@@ -252,7 +242,6 @@ public class RobotContainer {
   }
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    // return new DriveForDistance(drive, Units.feetToMeters(-5), 1, 0.05);
     return new MVPAuto(shooterV2, indexer, drive);
   }
 }

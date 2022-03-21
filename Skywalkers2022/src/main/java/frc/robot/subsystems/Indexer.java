@@ -43,7 +43,6 @@ public class Indexer extends SubsystemBase {
    
     // colorMatcher.addColorMatch(kBlue);
     // colorMatcher.addColorMatch(kRed);
-    
   }
 
   @Override
@@ -58,12 +57,20 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putNumber("Indxer Current", indexerMotor.getOutputCurrent());
   }
 
+  public void on() {
+    setOutput(IndexerConstants.kIndexerSpeed);
+  }
+
+  public void off() {
+    setOutput(0);
+  }
+
   public void moveUntilBall(double speed) {
     double proximity = colorSensor.getProximity();
     if (proximity < 300) {
       setOutput(speed);
     } else {
-      setOutput(0);
+      off();
     }
   }
 
@@ -72,7 +79,7 @@ public class Indexer extends SubsystemBase {
     if (proximity > 300) {
       setOutput(speed);
     } else {
-      setOutput(0);
+      off();
     }
   }
 
@@ -96,15 +103,10 @@ public class Indexer extends SubsystemBase {
   
   public boolean isBallAtExit() {
     double proximity = colorSensor.getProximity();
-    if (proximity > 150) {
-      return true;
-    } else {
-      return false;
-    }
+    return proximity > 150;
   }
   
   public double getVelocity() {
     return indexerEncoder.getVelocity();
   }
-
 }
