@@ -157,8 +157,10 @@ public class RobotContainer {
 
     new POVButton(driverController2, 0).whenPressed(() -> {
       rangeIndex = (rangeIndex + 1) % 3;
-      System.out.println("D-PAD Top");
-      System.out.println("Range Index " + rangeIndex);
+      hood.setPosition(ranges[rangeIndex][0]);
+      shooterV2.setSpeed(ranges[rangeIndex][1]);
+
+      System.out.println("D-PAD Top, Range Index " + rangeIndex);
       switch (rangeIndex) {
         case 0: SmartDashboard.putString("Shooter Range", "Low");
                 break;
@@ -173,8 +175,10 @@ public class RobotContainer {
     
     new POVButton(driverController2, 180).whenPressed(() -> {
       rangeIndex = (rangeIndex + 2) % 3;
-      System.out.println("D-PAD Bottom");
-      System.out.println("Range Index " + rangeIndex);
+      hood.setPosition(ranges[rangeIndex][0]);
+      shooterV2.setSpeed(ranges[rangeIndex][1]);
+
+      System.out.println("D-PAD Bottom, Range Index " + rangeIndex);
       switch (rangeIndex) {
         case 0: SmartDashboard.putString("Shooter Range", "Low");
                 break;
