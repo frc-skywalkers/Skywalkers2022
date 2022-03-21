@@ -4,21 +4,16 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -29,7 +24,6 @@ import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
 import frc.robot.commands.MoveHood;
-import frc.robot.commands.MoveHoodToPosition;
 import frc.robot.commands.Shoot;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.FunnelConstants;
@@ -40,6 +34,7 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterV2;
 import frc.robot.subsystems.Arm;
@@ -60,6 +55,7 @@ public class RobotContainer {
   private Hood hood = new Hood();
   // private Shooter shooter = new Shooter();
   private ShooterV2 shooterV2 = new ShooterV2();
+  private Limelight limelight = new Limelight();
 
   public static double[][] ranges = {{0,20}, {50, 20}, {100, 25}};
   public static int rangeIndex = 0;
@@ -72,12 +68,12 @@ public class RobotContainer {
   public RobotContainer() {
 
     drive.setDefaultCommand( 
-        new RunCommand(
-            () ->
-              drive.arcadeDrive(
-                  -driverController1.getRawAxis(OIConstants.kLeftY),
-                  driverController1.getRawAxis(OIConstants.kRightX)),
-            drive));
+      new RunCommand(
+        () ->
+          drive.arcadeDrive(
+            -driverController1.getRawAxis(OIConstants.kLeftY),
+            driverController1.getRawAxis(OIConstants.kRightX)),
+        drive));
 
     // drive.setDefaultCommand( 
     //     new RunCommand(
@@ -129,6 +125,12 @@ public class RobotContainer {
     //         driverController.getRawButton(OIConstants.kX), driverController.getRawButton(OIConstants.kY),
     //         driverController.getRawButton(OIConstants.kLeftBumper), driverController.getRawButton(OIConstants.kRightBumper),
     //         driverController.getRawAxis(OIConstants.kRightY), driverController.getPOV()), climber));
+
+    limelight.setDefaultCommand(
+      new RunCommand(
+        () ->
+          limelight.updateValues(),
+        limelight));
 
     // Configure the button bindings
     configureButtonBindings();

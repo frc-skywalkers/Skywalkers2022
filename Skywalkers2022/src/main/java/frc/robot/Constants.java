@@ -110,7 +110,6 @@ public final class Constants {
     }
 
     public static final class FunnelConstants {
-
         public static int kMotorPort = 24;
         public static boolean kInvert = true;
         public static double kFunnelSpeed = 0.3;
@@ -118,7 +117,6 @@ public final class Constants {
     }
 
     public static final class IndexerConstants {
-
         public static int kMotorPort = 25;
         public static boolean kInvert = true;
         public static double kIndexerSpeed = 0.7;

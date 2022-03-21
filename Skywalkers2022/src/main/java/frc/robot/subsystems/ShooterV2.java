@@ -111,6 +111,4 @@ public class ShooterV2 extends SubsystemBase {
   public double getRPM() {
     return (double) getVel() * 60.0;
   }
-
-  
 }
