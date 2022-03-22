@@ -4,39 +4,29 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-
-import frc.robot.Constants.ShooterConstants;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
-public class Shooter extends PIDSubsystem {
+public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
+
   private final WPI_TalonFX leftMaster = new WPI_TalonFX(ShooterConstants.kShooterMotorPortLeft);
   private final WPI_TalonFX rightFollower = new WPI_TalonFX(ShooterConstants.kShooterMotorPortRight);
 
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(
-    ShooterConstants.kStaticFriction, 
-    ShooterConstants.kVelocity, 
-    ShooterConstants.kAccel);
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0, 12/32.8, 0);
 
-  // private BangBangController bang = new BangBangController();
-
+  private double targetRPS = 0;
+  private boolean stop = false;
 
   public Shooter() {
-    super(
-        // The PIDController used by the subsystem
-        new PIDController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD));
-
     leftMaster.configFactoryDefault();
     leftMaster.setInverted(ShooterConstants.kShooterInvert);
     leftMaster.setNeutralMode(NeutralMode.Coast);
@@ -46,64 +36,54 @@ public class Shooter extends PIDSubsystem {
     rightFollower.setInverted(InvertType.OpposeMaster);
     rightFollower.setNeutralMode(NeutralMode.Coast);
 
-    
-
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
     configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
 
     leftMaster.configAllSettings(configs);
     rightFollower.configAllSettings(configs);
+  }
 
-    
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    if (stop) {
+      setVoltage(0);
+    } else {
+      double error = targetRPS - getRPS();
+      double feedforward = m_feedforward.calculate(targetRPS);
+      setVoltage(error * 0.05 + feedforward);
+    }
+
+    SmartDashboard.putNumber("Shooter Velocity", getRPS());
+  }
+
+  public void setSpeed(double rps) {
+    targetRPS = rps;
+    stop = false;
+  }
+
+  public void stopShoot() {
+    stop = true;
   }
 
   public void setVoltage(double volts) {
     leftMaster.setVoltage(volts); 
   }
 
-  public void stopShoot() {
-    leftMaster.setVoltage(0.000);
+  public boolean atSpeed(double targetSpeed, double tolerance) {
+    return Math.abs(targetSpeed - getRPS()) < tolerance;
   }
 
-
-  public double getSenPos() {
-    return leftMaster.getSelectedSensorPosition();
+  public boolean atSpeed(double tolerance) {
+    return atSpeed(targetRPS, tolerance);
   }
 
-  public double getSenVel() {
+  public double getVel() {
     return leftMaster.getSelectedSensorVelocity();
   }
 
-  public double getPosRotations() {
-    return (double) getSenPos() * ShooterConstants.kDistancePerPulse;
-  }
-
-  public double getRotPerSec() {
-    return (double) getSenVel() * ShooterConstants.kDistancePerPulse * 10;
-  }
-
-  public double getRotPerMin() {
-    return (double) getSenVel() * 60.0;
-  }
-
-  
-  @Override
-  public void useOutput(double output, double setpoint) {
-    double feedforward = m_feedforward.calculate(setpoint);
-    setVoltage(output + feedforward);
-    return;
-  }
-
-  @Override
-  public double getMeasurement() {
-    // Return the process variable measurement here
-    return getSenVel();
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-    SmartDashboard.putNumber("Shooter Velocity", getRotPerMin());
+  public double getRPS() {
+    return getVel() * ShooterConstants.kDistancePerPulse * 10;
   }
 }

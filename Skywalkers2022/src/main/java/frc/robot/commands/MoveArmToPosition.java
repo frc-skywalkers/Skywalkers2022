@@ -11,13 +11,12 @@ import frc.robot.subsystems.Arm;
 
 public class MoveArmToPosition extends CommandBase {
   /** Creates a new MoveArmToPosition. */
-  Arm arm;
-  double targetArmPos;
-  double kP;
-  double tolerance;
+  private Arm arm;
+  private double targetArmPos;
+  private double kP;
+  private double tolerance;
 
   public MoveArmToPosition(Arm arm, double targetArmPos, double kP, double tolerance) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
     this.targetArmPos = targetArmPos;
     this.kP = kP;
@@ -32,12 +31,10 @@ public class MoveArmToPosition extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double curPos = this.arm.getPosition();
-    double dif = this.targetArmPos - curPos;
-    double speed = this.kP * dif;
-    speed = MathUtil.clamp(speed, -0.1, 0.1);
+    double dif = targetArmPos - arm.getPosition();
+    double speed = MathUtil.clamp(kP * dif, -0.1, 0.1);
     SmartDashboard.putNumber("Arm Power", speed);
-    this.arm.arm(speed);
+    arm.arm(speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +46,6 @@ public class MoveArmToPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(this.arm.getPosition() - this.targetArmPos) < this.tolerance;
+    return Math.abs(arm.getPosition() - targetArmPos) < tolerance;
   }
 }

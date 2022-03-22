@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
-  private static final double CAM_MOUNTING_ANGLE = 0; // TODO: verify with mounting
+  private static final double CAM_MOUNTING_ANGLE = 15; // TODO: verify with mounting
   private static final double CAM_HEIGHT = 26; // TODO: verify with mounting
   private static final double GOAL_HEIGHT = 104;
 

@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
   // private final ColorMatch colorMatcher = new ColorMatch();
   // private final Color kBlue = new Color(0, 0, 0);
   // private final Color kRed = new Color(0, 0, 0);
-  // implement beam breaker sensors
+  // TODO: implement beam breaker sensors
 
   public enum BallColor {
     BLUE, RED, UKNOWN;

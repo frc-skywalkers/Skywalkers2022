@@ -6,14 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterV2;
+import frc.robot.subsystems.Shooter;
 
 public class BringShooterToSpeed extends CommandBase {
   /** Creates a new BringShooterToSpeed. */
-  private ShooterV2 shooter;
+  private Shooter shooter;
   private double targetRPS;
 
-  public BringShooterToSpeed(ShooterV2 shooter, double target) {
+  public BringShooterToSpeed(Shooter shooter, double target) {
     this.shooter = shooter;
     targetRPS = target;
     SmartDashboard.putNumber("Target", targetRPS);

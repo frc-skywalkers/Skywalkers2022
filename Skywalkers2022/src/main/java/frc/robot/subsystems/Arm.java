@@ -35,7 +35,6 @@ public class Arm extends SubsystemBase {
 
   public void stop() {
     armMotor.stopMotor();
-
   }
 
   public double getPosition() {

@@ -35,15 +35,12 @@ public class Drivetrain extends SubsystemBase {
   private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(rightMaster, rightFollower);
 
   private final DifferentialDrive drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
-
+  // private DifferentialDriveOdometry m_odometry;
 
   // private final PigeonIMU m_gyro = new PigeonIMU(DriveConstants.PigeonIMUPort);
-
-  // private DifferentialDriveOdometry m_odometry;
   // private Field2d field = new Field2d();
 
   public Drivetrain() {
-    
     leftMaster.configFactoryDefault();
     leftFollower.configFactoryDefault();
     rightMaster.configFactoryDefault();
@@ -73,21 +70,16 @@ public class Drivetrain extends SubsystemBase {
     drive.setMaxOutput(DriveConstants.kMaxOutput);
 
     // m_odometry = new DifferentialDriveOdometry(getRotation2dPdg());
-
-    // SmartDashboard.putData("Field", field);
-
     // resetDrivetrainEncoders();
     // zeroHeading();
+    // SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    // m_odometry.update(
-    //   Rotation2d.fromDegrees(getHeading()), 
-    //   getLeftEncoderDistance(), 
-    //   getRightEncoderDistance());
+    // m_odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
     // field.setRobotPose(getPose());
   }
 
@@ -96,96 +88,67 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void arcadeDrive(double fwd, double rot) {
-    // System.out.println("Called");
-    // System.out.println("FWD" + fwd);
-    // System.out.println("ROT" + rot);
     drive.arcadeDrive(fwd, rot);
   }
 
-  // public void setLeft(double speed) {
-  //   // System.out.println("Called");
-  //   leftMaster.set(TalonFXControlMode.PercentOutput, speed * 0.1);
-  // }
-
   public void setMaxOutput(double maxOutput) {
     drive.setMaxOutput(maxOutput);
+  }
+
+  public double getAverageEncoderDistance() {
+    return (getLeftEncoderDistance() + getRightEncoderDistance()) / 2;
+  }
+
+  public double getLeftEncoderDistance() {
+    return leftMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
+  }
+
+  public double getRightEncoderDistance() {
+    return rightMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
+  }
+
+  public double getRightEncoderRate() {
+      return rightMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
+  }
+
+  public double getLeftEncoderRate() {
+      return leftMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
+  }
+  
+  public void resetDrivetrainEncoders() {
+    leftMaster.setSelectedSensorPosition(0);
+    rightMaster.setSelectedSensorPosition(0);
   }
 
   // public DifferentialDriveWheelSpeeds getWheelSpeeds() {
   //   return new DifferentialDriveWheelSpeeds(getLeftEncoderRate(), getRightEncoderRate());
   // }
 
-
-  public double getAverageEncoderDistance() {
-    return (getLeftEncoderDistance() + getRightEncoderDistance()) / 2.0;
-  }
-
-  public double getLeftEncoderDistance(){
-    return leftMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
-    
-  }
-
-  public double getRightEncoderDistance(){
-    return rightMaster.getSelectedSensorPosition() * DriveConstants.kDistancePerPulseFactor;
-    
-  }
-
-  public double getRightEncoderRate() {
-      return rightMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
-    
-  }
-
-  public double getLeftEncoderRate() {
-      return leftMaster.getSelectedSensorVelocity() * DriveConstants.kDistancePerPulseFactor / 60;
-    
-  }
-
-
   // public Pose2d getPose() {
   //   return m_odometry.getPoseMeters();
   // }
-
-  
-  // public void tankDriveVolts(double leftVolts, double rightVolts) {
-  //   var batteryVoltage = RobotController.getBatteryVoltage();
-  //   if (Math.max(Math.abs(leftVolts), Math.abs(rightVolts)) > batteryVoltage) {
-  //     leftVolts *= batteryVoltage / 12.0;
-  //     rightVolts *= batteryVoltage / 12.0;
-  //   }
-  //   m_leftGroup.setVoltage(leftVolts);
-  //   m_rightGroup.setVoltage(rightVolts);
-  //   drive.feed();
-  // }
-
-  public void resetDrivetrainEncoders(){
-    leftMaster.setSelectedSensorPosition(0);
-    rightMaster.setSelectedSensorPosition(0);
-  }
 
   // public void resetOdometry(Pose2d pose) {
   //   resetDrivetrainEncoders();
   //   m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   // }
-  
 
   // public void zeroHeading() {
   //   m_gyro.setYaw(0);
   // }
-
  
   // public double getHeading() {
   //   return Math.IEEEremainder(getRotation2dPdg().getDegrees(), 360);
   // }
-
   
-  // public Rotation2d getRotation2dPdg(){
-  //   double YPR [] = new double [3];
+  // public Rotation2d getRotation2dPdg() {
+  //   double[] YPR = new double [3];
   //   m_gyro.getYawPitchRoll(YPR);
   //   return Rotation2d.fromDegrees(YPR[0]);
   // }
 
-  // public double getAnglePdg(){
-  //   double YPR [] = new double [3];
+  // public double getAnglePdg() {
+  //   double[] YPR = new double [3];
   //   m_gyro.getYawPitchRoll(YPR);
   //   return YPR[0];
   // }

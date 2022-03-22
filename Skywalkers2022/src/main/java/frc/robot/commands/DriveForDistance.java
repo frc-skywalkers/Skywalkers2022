@@ -10,12 +10,12 @@ import frc.robot.subsystems.Drivetrain;
 
 public class DriveForDistance extends CommandBase {
   /** Creates a new DriveForDistance. */
-  Drivetrain drivetrain;
-  double targetDistance;
-  double kP;
-  double tolerance;
+  private Drivetrain drivetrain;
+  private double targetDistance;
+  private double kP;
+  private double tolerance;
+
   public DriveForDistance(Drivetrain drivetrain, double targetDistance, double kP, double tolerance) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.targetDistance = targetDistance;
     this.kP = kP;
@@ -32,10 +32,9 @@ public class DriveForDistance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double curDist = this.drivetrain.getAverageEncoderDistance();
-    double dif = targetDistance - curDist;
-    dif = MathUtil.clamp(dif, -0.5, 0.5);
-    this.drivetrain.arcadeDrive(dif * kP, 0);
+    double dif = targetDistance - drivetrain.getAverageEncoderDistance();
+    dif = MathUtil.clamp(dif * kP, -0.5, 0.5);
+    drivetrain.arcadeDrive(dif, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,6 +44,6 @@ public class DriveForDistance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(this.drivetrain.getAverageEncoderDistance() - this.targetDistance) < tolerance;
+    return Math.abs(drivetrain.getAverageEncoderDistance() - targetDistance) < tolerance;
   }
 }

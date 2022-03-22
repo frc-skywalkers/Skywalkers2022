@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.ShooterV2;
+import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -18,7 +18,7 @@ import frc.robot.subsystems.ShooterV2;
 public class MVPAuto extends SequentialCommandGroup {
   /** Creates a new MVPAuto. */
 
-  public MVPAuto(ShooterV2 shooter, Indexer indexer, Drivetrain drivetrain) {
+  public MVPAuto(Shooter shooter, Indexer indexer, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SequentialCommandGroup(

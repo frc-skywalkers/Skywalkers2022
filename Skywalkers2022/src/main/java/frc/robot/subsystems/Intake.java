@@ -31,10 +31,8 @@ public class Intake extends SubsystemBase {
 
     armMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) IntakeConstants.kMinArmThreshold);
-
   }
 
-  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -64,7 +62,6 @@ public class Intake extends SubsystemBase {
     return armMotor.getAppliedOutput();
   }
 
-
   public void setRollerOutput(double speed) {
     intakeMotor.set(speed);
   }
@@ -74,10 +71,6 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isDeployed() {
-    if (Math.abs(IntakeConstants.kMaxArmThreshold - getArmPosition()) >= IntakeConstants.kArmThreshold) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(IntakeConstants.kMaxArmThreshold - getArmPosition()) >= IntakeConstants.kArmThreshold;
   }
 }

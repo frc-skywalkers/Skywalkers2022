@@ -28,8 +28,11 @@ public class Funnel extends SubsystemBase {
     funnelMotor.set(speed);
   }
 
-  public void stop() {
-    setOutput(0);
+  public void on() {
+    setOutput(FunnelConstants.kFunnelSpeed);
   }
 
+  public void off() {
+    setOutput(0);
+  }
 }

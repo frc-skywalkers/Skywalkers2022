@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.FunnelConstants;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
@@ -18,7 +17,6 @@ public class IndexBall extends CommandBase {
   private boolean ballToBeIndexed;
 
   public IndexBall(Indexer indexer) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.indexer = indexer;
     // this.intake = intake;
     // this.funnel = funnel;
@@ -35,25 +33,25 @@ public class IndexBall extends CommandBase {
   @Override
   public void execute() {
     if (indexer.isBallAtExit()) {
-      this.ballToBeIndexed = false;
+      ballToBeIndexed = false;
     } else {
-      this.ballToBeIndexed = true;
+      ballToBeIndexed = true;
     }
-    if (this.ballToBeIndexed) {
+
+    if (ballToBeIndexed) {
       indexer.on();
     } else {
       indexer.off();
     }
     // intake.intake();
-    // funnel.setOutput(FunnelConstants.kFunnelSpeed);
-
+    // funnel.on();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // intake.setRollerOutput(0);
-    // funnel.setOutput(0);
+    // intake.stopRollers();
+    // funnel.off();
     indexer.off();
   }
 
