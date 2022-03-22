@@ -67,13 +67,15 @@ public class RobotContainer {
     climber.setDefaultCommand(
       new RunCommand(
         () ->
-          climber.rotateArms(driverController2.getRawAxis(OIConstants.kRightY)),
+          climber.rotateArms(
+            driverController2.getRawAxis(OIConstants.kLeftY),
+            driverController2.getRawButton(OIConstants.kY)),
         climber));
 
     // hood.setDefaultCommand(
     //   new RunCommand(
     //     () -> 
-    //       hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2), 
+    //       hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2), // change control (interferes with climber arms)
     //     hood));
 
     indexer.setDefaultCommand(
@@ -160,10 +162,10 @@ public class RobotContainer {
     new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenPressed(new MoveArmToPosition(arm, 0, 0.1, 0.25));
     new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenPressed(new MoveArmToPosition(arm, 14, 0.05, 0.25));
 
-    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenPressed(() -> climber.unlatchFirst());
-    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenPressed(() -> climber.unlatchSecond());
-    new JoystickButton(driverController2, OIConstants.kUnlatchFirstRungButton.value).whenReleased(() -> climber.latchFirst());
-    new JoystickButton(driverController2, OIConstants.kUnlatchSecondRungButton.value).whenReleased(() -> climber.latchSecond());
+    new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());
+    new JoystickButton(driverController2, Button.kLeftBumper.value).whenReleased(() -> climber.latchFirst());
+    new JoystickButton(driverController2, Button.kRightBumper.value).whenPressed(() -> climber.unlatchSecond());
+    new JoystickButton(driverController2, Button.kRightBumper.value).whenReleased(() -> climber.latchSecond());
   }
 
   /**

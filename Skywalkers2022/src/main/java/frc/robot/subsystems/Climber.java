@@ -35,8 +35,8 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void rotateArms(double speed) {
-    if (Math.abs(speed) < 0.075) {
+  public void rotateArms(double speed, boolean enableClimberArms) {
+    if (!enableClimberArms || Math.abs(speed) < 0.075) {
       speed = 0;
     }
 

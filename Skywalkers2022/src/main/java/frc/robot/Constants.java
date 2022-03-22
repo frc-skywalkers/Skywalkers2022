@@ -38,9 +38,6 @@ public final class Constants {
         public static final Button kStopRollerButton = Button.kB;
         public static final Button kLiftArmButton = Button.kRightBumper;
         public static final Button kLowerArmButton = Button.kLeftBumper;
-
-        public static final Button kUnlatchFirstRungButton = Button.kLeftBumper;
-        public static final Button kUnlatchSecondRungButton = Button.kRightBumper;
     }
 
     public static final class DriveConstants {
