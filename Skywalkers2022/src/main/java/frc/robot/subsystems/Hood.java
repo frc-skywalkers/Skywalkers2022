@@ -16,9 +16,11 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Hood extends SubsystemBase {
   /** Creates a new Hood. */
-
   private final CANSparkMax hoodMotor = new CANSparkMax(ShooterConstants.kHoodMotorPort, MotorType.kBrushless);
   private RelativeEncoder hoodEncoder;
+
+  private final double HOOD_TOLERANCE = 1;
+  private final double kP = 0.4;
 
   private double targetPosition = 0;
   private boolean stop = false;
@@ -37,11 +39,11 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (stop) {
+    double error = targetPosition - getPosition();
+    if (stop || Math.abs(error) < HOOD_TOLERANCE) {
       setOutput(0);
     } else {
-      double error = targetPosition - getPosition();
-      setOutput(error * 0.4);
+      setOutput(error * kP);
     }
 
     SmartDashboard.putNumber("Hood Position", getPosition());
