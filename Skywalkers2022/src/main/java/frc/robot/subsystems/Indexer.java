@@ -53,6 +53,9 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setOutput(double speed) {
+    if (Math.abs(speed) < 0.05){
+      speed = 0;
+    }
     indexerMotor.set(speed);
     SmartDashboard.putNumber("Indxer Current", indexerMotor.getOutputCurrent());
   }

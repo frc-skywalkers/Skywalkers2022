@@ -61,7 +61,7 @@ public class RobotContainer {
         () ->
           drive.arcadeDrive(
             -driverController1.getRawAxis(OIConstants.kLeftY),
-            driverController1.getRawAxis(OIConstants.kRightX)),
+            driverController1.getRawAxis(OIConstants.kRightX) * 0.7),
         drive));
 
     climber.setDefaultCommand(

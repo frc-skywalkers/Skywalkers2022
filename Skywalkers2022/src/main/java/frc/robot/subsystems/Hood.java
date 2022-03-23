@@ -20,7 +20,7 @@ public class Hood extends SubsystemBase {
   private RelativeEncoder hoodEncoder;
 
   private final double HOOD_TOLERANCE = 1;
-  private final double kP = 0.4;
+  private final double kP = 0.2;
 
   private double targetPosition = 0;
   private boolean stop = false;
