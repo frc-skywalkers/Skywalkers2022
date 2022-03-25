@@ -26,7 +26,7 @@ public class DriveForDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.drivetrain.resetDrivetrainEncoders();
+    drivetrain.resetDrivetrainEncoders();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

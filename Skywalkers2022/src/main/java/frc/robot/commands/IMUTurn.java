@@ -5,47 +5,45 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drivetrain;
 
-public class MoveArmToPosition extends CommandBase {
-  /** Creates a new MoveArmToPosition. */
-  private Arm arm;
-  private double targetArmPos;
+public class IMUTurn extends CommandBase {
+  /** Creates a new IMUTurn. */
+  private Drivetrain drivetrain;
+  private double targetAngle;
   private double kP;
   private double tolerance;
 
-  public MoveArmToPosition(Arm arm, double targetArmPos, double kP, double tolerance) {
-    this.arm = arm;
-    this.targetArmPos = targetArmPos;
+  public IMUTurn(Drivetrain drivetrain, double targetAngle, double kP, double tolerance) {
+    this.drivetrain = drivetrain;
+    this.targetAngle = targetAngle;
     this.kP = kP;
     this.tolerance = tolerance;
-    addRequirements(this.arm);
+    addRequirements(this.drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    drivetrain.resetHeading();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double dif = targetArmPos - arm.getPosition();
-    double speed = MathUtil.clamp(kP * dif, -0.2, 0.2);
-    SmartDashboard.putNumber("Arm Power", speed);
-    arm.arm(speed);
+    double dif = targetAngle - drivetrain.getHeading();
+    dif = MathUtil.clamp(dif * kP, -0.5, 0.5);
+    drivetrain.arcadeDrive(0, dif);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    arm.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(arm.getPosition() - targetArmPos) < tolerance;
+    return Math.abs(drivetrain.getHeading() - targetAngle) < tolerance;
   }
 }

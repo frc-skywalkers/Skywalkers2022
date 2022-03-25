@@ -53,7 +53,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void setOutput(double speed) {
-    if (Math.abs(speed) < 0.05){
+    if (Math.abs(speed) < 0.05) {
       speed = 0;
     }
     indexerMotor.set(speed);

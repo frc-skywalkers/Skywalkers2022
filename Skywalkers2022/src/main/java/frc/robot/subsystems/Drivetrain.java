@@ -6,19 +6,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -35,10 +28,8 @@ public class Drivetrain extends SubsystemBase {
   private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(rightMaster, rightFollower);
 
   private final DifferentialDrive drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
-  // private DifferentialDriveOdometry m_odometry;
 
-  // private final PigeonIMU m_gyro = new PigeonIMU(DriveConstants.PigeonIMUPort);
-  // private Field2d field = new Field2d();
+  private final PigeonIMU imu = null;//new PigeonIMU(DriveConstants.PigeonIMUPort);
 
   public Drivetrain() {
     leftMaster.configFactoryDefault();
@@ -69,18 +60,13 @@ public class Drivetrain extends SubsystemBase {
 
     drive.setMaxOutput(DriveConstants.kMaxOutput);
 
-    // m_odometry = new DifferentialDriveOdometry(getRotation2dPdg());
-    // resetDrivetrainEncoders();
-    // zeroHeading();
-    // SmartDashboard.putData("Field", field);
+    // resetHeading();
+    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    // m_odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
-    // field.setRobotPose(getPose());
   }
 
   public void stop() {
@@ -120,36 +106,13 @@ public class Drivetrain extends SubsystemBase {
     rightMaster.setSelectedSensorPosition(0);
   }
 
-  // public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-  //   return new DifferentialDriveWheelSpeeds(getLeftEncoderRate(), getRightEncoderRate());
-  // }
+  public void resetHeading() {
+    imu.setYaw(0);
+  }
 
-  // public Pose2d getPose() {
-  //   return m_odometry.getPoseMeters();
-  // }
-
-  // public void resetOdometry(Pose2d pose) {
-  //   resetDrivetrainEncoders();
-  //   m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
-  // }
-
-  // public void zeroHeading() {
-  //   m_gyro.setYaw(0);
-  // }
- 
-  // public double getHeading() {
-  //   return Math.IEEEremainder(getRotation2dPdg().getDegrees(), 360);
-  // }
-  
-  // public Rotation2d getRotation2dPdg() {
-  //   double[] YPR = new double [3];
-  //   m_gyro.getYawPitchRoll(YPR);
-  //   return Rotation2d.fromDegrees(YPR[0]);
-  // }
-
-  // public double getAnglePdg() {
-  //   double[] YPR = new double [3];
-  //   m_gyro.getYawPitchRoll(YPR);
-  //   return YPR[0];
-  // }
+  public double getHeading() {
+    double[] YPR = new double[3];
+    imu.getYawPitchRoll(YPR);
+    return YPR[0];
+  }
 }

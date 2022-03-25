@@ -37,4 +37,16 @@ public class Limelight extends SubsystemBase {
     y = table.getEntry("ty").getDouble(0);
     distance = (GOAL_HEIGHT - CAM_HEIGHT) / Math.tan(Math.toRadians(CAM_MOUNTING_ANGLE + y));
   }
+
+  public double getX() {
+    return x;
+  }
+
+  public double getY() {
+    return y;
+  }
+
+  public double getDistance() {
+    return distance;
+  }
 }

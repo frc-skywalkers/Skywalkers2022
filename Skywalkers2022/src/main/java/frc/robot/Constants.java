@@ -49,7 +49,7 @@ public final class Constants {
         public static final TalonFXInvertType kLeftInvertType = TalonFXInvertType.Clockwise;
         public static final TalonFXInvertType kRightInvertType = TalonFXInvertType.CounterClockwise;
 
-        public static final double kMaxOutput = 0.6;
+        public static final double kMaxOutput = 0.85;
         public static final TalonSRX PigeonIMUPort = null;
         public static final double kGearRatio = 11.0/60.0 * 16.0/32.0;
         public static final double kTicksPerRotation = 2048;
@@ -62,8 +62,8 @@ public final class Constants {
         public static final int kMotorRightPort = 14;
         public static final int kServoLeftFirstPort = 6;
         public static final int kServoRightFirstPort = 9;
-        public static final int kServoLeftSecondPort = 7;
-        public static final int kServoRightSecondPort = 8;
+        // public static final int kServoLeftSecondPort = 7;
+        // public static final int kServoRightSecondPort = 8;
         public static final double kInitialSpeedControl = 0.7;
         public static final boolean kClimberLeftInvert = false;
         public static final boolean kClimberRightInvert = false;

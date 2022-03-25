@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -47,12 +48,38 @@ public class RobotContainer {
   private Shooter shooter = new Shooter();
   private Limelight limelight = new Limelight();
 
-  private static double[][] ranges = {{0,20}, {50, 20}, {100, 25}};
-  private static int rangeIndex = 0;
-  private static String[] rangeLabels = {"Low", "Mid", "High"};
+  // private static double[][] ranges = {{8, 22}, {45, 20}, {90, 25}}; // {hood, shooter}
+  // private static int numPoints = 3;
+  // private static int rangeIndex = 0;
+  // private static String[] rangeLabels = {"Low", "Mid", "High"};
+
+  private static double[][] ranges = {{0, 20}, {0, 22}, {8, 22}, {0, 10}, {45, 20}, {45, 22}}; // {hood, shooter}
+  private static int numPoints = 6;
+  private static int rangeIndex = 3;
+  private static String[] rangeLabels = {"Low 1", "Low 2", "Low 3", "Miss", "Mid 1", "Mid 2"};
 
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
+
+  // GAMEPAD1
+  // Left Y: Drivetrain Turning
+  // Right X: Drivetrain Motion
+  // X: Limelight Aim (Commented)
+  // A: Intake On
+  // B: Intake Off
+  // Right Bumper: Lift Arm
+  // Left Bumper: Lower Arm
+
+  // GAMEPAD2
+  // Left Y + Y: Climber Arm
+  // Right Y: Indexer
+  // DPAD Up: Increment Range
+  // DPAD Down: Decrement Range
+  // X: Set Shooter/Hood Targets
+  // A: Shoot
+  // B: Stop Shooter
+  // Left Bumper: Unlatch Climber First Rung
+  // Right Bumper: Unlatch Climber Second Rung
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -113,7 +140,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
-
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
 
     new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(
@@ -124,8 +150,15 @@ public class RobotContainer {
       },
       indexer, intake, funnel));
 
+    new JoystickButton(driverController1, Button.kX.value).whenHeld(new InstantCommand(
+      () -> {
+        System.out.println("x: " + limelight.getX());
+        drive.arcadeDrive(0, MathUtil.clamp(limelight.getX() * 0.05, -0.6, 0.6));
+      },
+      drive));
+
     new POVButton(driverController2, 0).whenPressed(() -> {
-      rangeIndex = (rangeIndex + 1) % 3;
+      rangeIndex = (rangeIndex + 1) % numPoints;
       hood.setPosition(ranges[rangeIndex][0]);
       shooter.setSpeed(ranges[rangeIndex][1]);
 
@@ -134,22 +167,27 @@ public class RobotContainer {
     });
     
     new POVButton(driverController2, 180).whenPressed(() -> {
-      rangeIndex = (rangeIndex + 2) % 3;
+      rangeIndex = (rangeIndex - 1 + numPoints) % numPoints;
       hood.setPosition(ranges[rangeIndex][0]);
       shooter.setSpeed(ranges[rangeIndex][1]);
-
+ 
       System.out.println("D-PAD Bottom, Range Index " + rangeIndex);
       SmartDashboard.putString("Shooter Range", rangeLabels[rangeIndex]);
     });
 
-    new JoystickButton(driverController2, Button.kX.value).whenPressed(
-      new MoveHood(hood, ranges[rangeIndex][0]).alongWith(
-      new BringShooterToSpeed(shooter, ranges[rangeIndex][1]))
-      // .andThen(
-      // new SequentialCommandGroup(
-        // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
-        // new InstantCommand(() -> indexer.off())))
-    );
+    // new JoystickButton(driverController2, Button.kX.value).whenPressed(
+    //   new MoveHood(hood, ranges[rangeIndex][0]).alongWith(
+    //   new BringShooterToSpeed(shooter, ranges[rangeIndex][1]))
+    //   // .andThen(
+    //   // new SequentialCommandGroup(
+    //     // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
+    //     // new InstantCommand(() -> indexer.off())))
+    // );
+
+    new JoystickButton(driverController2, Button.kX.value).whenPressed(() -> {
+      hood.setPosition(ranges[rangeIndex][0]);
+      shooter.setSpeed(ranges[rangeIndex][1]);
+    });
 
     new JoystickButton(driverController2, Button.kA.value).whenPressed(
         new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2)
@@ -164,8 +202,8 @@ public class RobotContainer {
 
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenReleased(() -> climber.latchFirst());
-    new JoystickButton(driverController2, Button.kRightBumper.value).whenPressed(() -> climber.unlatchSecond());
-    new JoystickButton(driverController2, Button.kRightBumper.value).whenReleased(() -> climber.latchSecond());
+    // new JoystickButton(driverController2, Button.kRightBumper.value).whenPressed(() -> climber.unlatchSecond());
+    // new JoystickButton(driverController2, Button.kRightBumper.value).whenReleased(() -> climber.latchSecond());
   }
 
   /**

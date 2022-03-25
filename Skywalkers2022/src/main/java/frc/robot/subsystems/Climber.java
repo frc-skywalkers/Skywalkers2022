@@ -17,8 +17,8 @@ public class Climber extends SubsystemBase {
   private final CANSparkMax climberMotorRight = new CANSparkMax(ClimberConstants.kMotorRightPort, MotorType.kBrushless);
   private final Servo climberServoLeftFirst = new Servo(ClimberConstants.kServoLeftFirstPort);
   private final Servo climberServoRightFirst = new Servo(ClimberConstants.kServoRightFirstPort);
-  private final Servo climberServoLeftSecond = new Servo(ClimberConstants.kServoLeftSecondPort);
-  private final Servo climberServoRightSecond = new Servo(ClimberConstants.kServoRightSecondPort);
+  // private final Servo climberServoLeftSecond = new Servo(ClimberConstants.kServoLeftSecondPort);
+  // private final Servo climberServoRightSecond = new Servo(ClimberConstants.kServoRightSecondPort);
 
   public Climber() {
     climberMotorLeft.restoreFactoryDefaults();
@@ -27,7 +27,7 @@ public class Climber extends SubsystemBase {
     climberMotorRight.setInverted(ClimberConstants.kClimberRightInvert);
 
     latchFirst();
-    latchSecond();
+    // latchSecond();
   }
 
   @Override
@@ -45,22 +45,22 @@ public class Climber extends SubsystemBase {
   }
 
   public void latchFirst() {
-    climberServoLeftFirst.set(0.35);
+    climberServoLeftFirst.set(0.45);
     climberServoRightFirst.set(0);
   }
 
   public void unlatchFirst() {
-    climberServoLeftFirst.set(0.05);
+    climberServoLeftFirst.set(0);
     climberServoRightFirst.set(0.35);
   }
 
-  public void latchSecond() {
-    climberServoLeftSecond.set(0);
-    climberServoLeftSecond.set(0.35);
-  }
+  // public void latchSecond() {
+  //   climberServoLeftSecond.set(0);
+  //   climberServoLeftSecond.set(0.35);
+  // }
 
-  public void unlatchSecond() {
-    climberServoLeftSecond.set(0.35);
-    climberServoRightSecond.set(0.05);
-  }
+  // public void unlatchSecond() {
+  //   climberServoLeftSecond.set(0.35);
+  //   climberServoRightSecond.set(0.05);
+  // }
 }
