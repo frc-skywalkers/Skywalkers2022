@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
 /**
@@ -34,12 +33,6 @@ public final class Constants {
         public static final int kY = 4;
         public static final int kLeftBumper = 5;
         public static final int kRightBumper = 6;
-
-        public static final Button kIntakeButton = Button.kA;
-        public static final Button kStopRollerButton = Button.kB;
-        public static final Button kLiftArmButton = Button.kRightBumper;
-        public static final Button kLowerArmButton = Button.kLeftBumper;
-        public static final Button kSlowDriveButton = Button.kRightStick;
     }
 
     public static final class DriveConstants {
@@ -52,12 +45,17 @@ public final class Constants {
         public static final TalonFXInvertType kRightInvertType = TalonFXInvertType.CounterClockwise;
 
         public static final double kMaxOutput = 0.85;
-        public static final TalonSRX PigeonIMUPort = null;
+        public static final double kSlowOutput = 0.35;
+        public static final double kTurnOutput = 0.7;
+
         public static final double kGearRatio = 11.0/60.0 * 16.0/32.0;
         public static final double kTicksPerRotation = 2048;
         public static final double kWheelDiameter = Units.inchesToMeters(6.0);
         public static final double kDistancePerPulseFactor = kWheelDiameter * Math.PI * kGearRatio / 2048;
-        public static final double kSlowOutput = 0.3;
+
+        public static final TalonSRX PigeonIMUPort = null;
+        public static final double kTiltThreshold = 10;
+        public static final double kTiltP = 0.03;
     }
 
     public static final class ClimberConstants {
@@ -65,8 +63,6 @@ public final class Constants {
         public static final int kMotorRightPort = 14;
         public static final int kServoLeftFirstPort = 6;
         public static final int kServoRightFirstPort = 9;
-        // public static final int kServoLeftSecondPort = 7;
-        // public static final int kServoRightSecondPort = 8;
         public static final double kInitialSpeedControl = 0.7;
         public static final boolean kClimberLeftInvert = false;
         public static final boolean kClimberRightInvert = false;
@@ -94,25 +90,11 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int kShooterMotorPortLeft = 20;
         public static final int kShooterMotorPortRight = 21;
-        public static final int kHoodMotorPort = 22; // TODO: fix
+        public static final int kHoodMotorPort = 22;
 
         public static final boolean kShooterInvert = false;
-        public static final boolean kHoodInvert = false; // TODO: fix
+        public static final boolean kHoodInvert = false;
         public static final double kDistancePerPulse = Units.inchesToMeters(4) * Math.PI / 2048;
-
-        public static final double kStaticFriction = 0.0;
-        public static final double kVelocity = 0.0;
-        public static final double kAccel = 0.0;
-        
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-    }
-
-    public static final class FunnelConstants {
-        public static int kMotorPort = 24;
-        public static boolean kInvert = true;
-        public static double kFunnelSpeed = 0.3;
     }
 
     public static final class IndexerConstants {

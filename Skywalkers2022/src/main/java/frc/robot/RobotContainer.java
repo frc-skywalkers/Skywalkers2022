@@ -20,7 +20,6 @@ import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Climber;
@@ -41,7 +40,6 @@ public class RobotContainer {
   private Intake intake = new Intake();
   private Arm arm = new Arm();
   private Indexer indexer = new Indexer();
-  private Funnel funnel = new Funnel();
   private Hood hood = new Hood();
   private Shooter shooter = new Shooter();
   private Limelight limelight = new Limelight();
@@ -86,39 +84,42 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    drive.setDefaultCommand( 
-      new RunCommand(
-        () ->
+    drive.setDefaultCommand(new RunCommand(
+      () -> {
+        if (drive.isTipping() /*&& !climberStarted*/) { // TODO: disable tilt code once climber has been started
+          drive.arcadeDrive(drive.getTilt() * -DriveConstants.kTiltP, 0);
+        } else if (driverController1.getRawButton(Button.kRightStick.value)) {
+          drive.arcadeDrive(
+            -driverController1.getRawAxis(OIConstants.kLeftY) * DriveConstants.kSlowOutput,
+            driverController1.getRawAxis(OIConstants.kRightX) * DriveConstants.kSlowOutput * DriveConstants.kTurnOutput);
+        } else {
           drive.arcadeDrive(
             -driverController1.getRawAxis(OIConstants.kLeftY),
-            driverController1.getRawAxis(OIConstants.kRightX) * 0.7),
-        drive));
+            driverController1.getRawAxis(OIConstants.kRightX) * DriveConstants.kTurnOutput);
+        }
+      }, drive));
 
-    climber.setDefaultCommand(
-      new RunCommand(
-        () ->
-          climber.rotateArms(
-            driverController2.getRawAxis(OIConstants.kLeftY),
-            driverController2.getRawButton(OIConstants.kY)),
-        climber));
+    climber.setDefaultCommand(new RunCommand(
+      () ->
+        climber.rotateArms(
+          driverController2.getRawAxis(OIConstants.kLeftY),
+          driverController2.getRawButton(OIConstants.kY)),
+      climber));
 
-    hood.setDefaultCommand(
-      new RunCommand(
-        () -> 
-          hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2, !driverController2.getRawButton(OIConstants.kY)),
-        hood));
+    hood.setDefaultCommand(new RunCommand(
+      () -> 
+        hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2, !driverController2.getRawButton(OIConstants.kY)),
+      hood));
 
-    indexer.setDefaultCommand(
-      new RunCommand(
-        () -> 
-          indexer.setOutput(-driverController2.getRawAxis(OIConstants.kRightY) * 0.7), 
-        indexer));
+    indexer.setDefaultCommand(new RunCommand(
+      () -> 
+        indexer.setOutput(-driverController2.getRawAxis(OIConstants.kRightY) * 0.7), 
+      indexer));
 
-    limelight.setDefaultCommand(
-      new RunCommand(
-        () ->
-          limelight.updateValues(),
-        limelight));
+    limelight.setDefaultCommand(new RunCommand(
+      () ->
+        limelight.updateValues(),
+      limelight));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -131,27 +132,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
-    new JoystickButton(driverController1, OIConstants.kSlowDriveButton.value)
-      .whenPressed(() -> drive.setMaxOutput(DriveConstants.kSlowOutput))
-      .whenReleased(() -> drive.setMaxOutput(DriveConstants.kMaxOutput));
+    // new JoystickButton(driverController1, Button.kA.value).whenPressed(new IndexBall(indexer));
 
-    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
+    new JoystickButton(driverController1, Button.kA.value).whenPressed(intake::intake, intake);
 
-    new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(
+    new JoystickButton(driverController1, Button.kB.value).whenPressed(new InstantCommand(
       () -> {
         intake.stopRollers();
-        // funnel.off();
         indexer.off();
-      },
-      indexer, intake, funnel));
+      }, indexer, intake));
 
     new JoystickButton(driverController1, Button.kX.value).whenHeld(new InstantCommand(
       () -> {
         System.out.println("x: " + limelight.getX());
         drive.arcadeDrive(0, MathUtil.clamp(limelight.getX() * 0.05, -0.6, 0.6));
-      },
-      drive));
+      }, drive));
 
     new POVButton(driverController2, 0).whenPressed(() -> {
       rangeIndex = (rangeIndex + 1) % numPoints;
@@ -184,13 +179,11 @@ public class RobotContainer {
       new InstantCommand(() -> shooter.stopShoot(), shooter)
     );
     
-    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
-    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
+    new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
+    new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
 
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenReleased(() -> climber.latchFirst());
-    // new JoystickButton(driverController2, Button.kRightBumper.value).whenPressed(() -> climber.unlatchSecond());
-    // new JoystickButton(driverController2, Button.kRightBumper.value).whenReleased(() -> climber.latchSecond());
   }
 
   /**

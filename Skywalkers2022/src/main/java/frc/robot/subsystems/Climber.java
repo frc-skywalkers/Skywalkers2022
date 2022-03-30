@@ -17,8 +17,6 @@ public class Climber extends SubsystemBase {
   private final CANSparkMax climberMotorRight = new CANSparkMax(ClimberConstants.kMotorRightPort, MotorType.kBrushless);
   private final Servo climberServoLeftFirst = new Servo(ClimberConstants.kServoLeftFirstPort);
   private final Servo climberServoRightFirst = new Servo(ClimberConstants.kServoRightFirstPort);
-  // private final Servo climberServoLeftSecond = new Servo(ClimberConstants.kServoLeftSecondPort);
-  // private final Servo climberServoRightSecond = new Servo(ClimberConstants.kServoRightSecondPort);
 
   public Climber() {
     climberMotorLeft.restoreFactoryDefaults();
@@ -29,7 +27,6 @@ public class Climber extends SubsystemBase {
     climberMotorRight.setSmartCurrentLimit(181, 2);
 
     latchFirst();
-    // latchSecond();
   }
 
   @Override
@@ -55,14 +52,4 @@ public class Climber extends SubsystemBase {
     climberServoLeftFirst.set(0.01);
     climberServoRightFirst.set(0.525);
   }
-
-  // public void latchSecond() {
-  //   climberServoLeftSecond.set(0);
-  //   climberServoLeftSecond.set(0.35);
-  // }
-
-  // public void unlatchSecond() {
-  //   climberServoLeftSecond.set(0.35);
-  //   climberServoRightSecond.set(0.05);
-  // }
 }

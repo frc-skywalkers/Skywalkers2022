@@ -30,7 +30,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
-  private final PigeonIMU imu = null;//new PigeonIMU(DriveConstants.PigeonIMUPort);
+  private final PigeonIMU imu = null; //new PigeonIMU(DriveConstants.PigeonIMUPort);
+  private double initialTilt = 0;
 
   public Drivetrain() {
     leftMaster.configFactoryDefault();
@@ -62,12 +63,14 @@ public class Drivetrain extends SubsystemBase {
 
     drive.setMaxOutput(DriveConstants.kMaxOutput);
 
-    // resetHeading();
+    // resetIMU();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // SmartDashboard.putNumber("IMU Heading", getHeading());
+    // SmartDashboard.putNumber("IMU Tilt", getTilt());
   }
 
   public void stop() {
@@ -107,13 +110,24 @@ public class Drivetrain extends SubsystemBase {
     rightMaster.setSelectedSensorPosition(0);
   }
 
-  public void resetHeading() {
+  public void resetIMU() {
     imu.setYaw(0);
+    initialTilt += getTilt();
+  }
+
+  public boolean isTipping() {
+    return getTilt() > DriveConstants.kTiltThreshold;
   }
 
   public double getHeading() {
     double[] YPR = new double[3];
     imu.getYawPitchRoll(YPR);
     return YPR[0];
+  }
+
+  public double getTilt() {
+    double[] YPR = new double[3];
+    imu.getYawPitchRoll(YPR);
+    return YPR[1] - initialTilt;
   }
 }

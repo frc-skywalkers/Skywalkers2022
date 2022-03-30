@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
@@ -13,13 +12,11 @@ public class IndexBall extends CommandBase {
   /** Creates a new IndexBall. */
   private Indexer indexer;
   // Intake intake;
-  // Funnel funnel;
   private boolean ballToBeIndexed;
 
   public IndexBall(Indexer indexer) {
     this.indexer = indexer;
     // this.intake = intake;
-    // this.funnel = funnel;
     addRequirements(indexer);
   }
 
@@ -44,14 +41,12 @@ public class IndexBall extends CommandBase {
       indexer.off();
     }
     // intake.intake();
-    // funnel.on();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     // intake.stopRollers();
-    // funnel.off();
     indexer.off();
   }
 
