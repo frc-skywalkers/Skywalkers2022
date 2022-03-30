@@ -57,6 +57,7 @@ public final class Constants {
         public static final double kTicksPerRotation = 2048;
         public static final double kWheelDiameter = Units.inchesToMeters(6.0);
         public static final double kDistancePerPulseFactor = kWheelDiameter * Math.PI * kGearRatio / 2048;
+        public static final double kSlowOutput = 0.3;
     }
 
     public static final class ClimberConstants {
