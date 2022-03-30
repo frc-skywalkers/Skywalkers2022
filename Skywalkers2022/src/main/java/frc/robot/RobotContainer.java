@@ -12,15 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.BringShooterToSpeed;
 import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
-import frc.robot.commands.MoveHood;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Hood;
@@ -53,10 +50,15 @@ public class RobotContainer {
   // private static int rangeIndex = 0;
   // private static String[] rangeLabels = {"Low", "Mid", "High"};
 
-  private static double[][] ranges = {{0, 20}, {0, 22}, {8, 22}, {0, 10}, {45, 20}, {45, 22}}; // {hood, shooter}
-  private static int numPoints = 6;
-  private static int rangeIndex = 3;
-  private static String[] rangeLabels = {"Low 1", "Low 2", "Low 3", "Miss", "Mid 1", "Mid 2"};
+  // private static double[][] ranges = {{0, 20}, {0, 22}, {8, 22}, {0, 10}, {45, 20}, {45, 22}}; // {hood, shooter}
+  // private static int numPoints = 6;
+  // private static int rangeIndex = 3;
+  // private static String[] rangeLabels = {"Low 1", "Low 2", "Low 3", "Miss", "Mid 1", "Mid 2"};
+
+  private static double[][] ranges = {{8, 22}, {0, 10}}; // {hood, shooter}
+  private static int numPoints = 2;
+  private static int rangeIndex = 0;
+  private static String[] rangeLabels = {"Low 3", "Miss"};
 
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
@@ -99,28 +101,17 @@ public class RobotContainer {
             driverController2.getRawButton(OIConstants.kY)),
         climber));
 
-    // hood.setDefaultCommand(
-    //   new RunCommand(
-    //     () -> 
-    //       hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2), // change control (interferes with climber arms)
-    //     hood));
+    hood.setDefaultCommand(
+      new RunCommand(
+        () -> 
+          hood.setOutput(-driverController2.getRawAxis(OIConstants.kLeftY) * 0.2, !driverController2.getRawButton(OIConstants.kY)),
+        hood));
 
     indexer.setDefaultCommand(
       new RunCommand(
         () -> 
           indexer.setOutput(-driverController2.getRawAxis(OIConstants.kRightY) * 0.7), 
         indexer));
-
-    // indexer.setDefaultCommand(new IndexBall(indexer));
-
-    // funnel.setDefaultCommand(
-    //   new RunCommand(
-    //     () -> {
-    //       if (intake.isDeployed()) {
-    //         funnel.on();
-    //       }
-    //     }, funnel)
-    // );
 
     limelight.setDefaultCommand(
       new RunCommand(
@@ -139,7 +130,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
+    // new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
 
     new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(
@@ -159,7 +150,7 @@ public class RobotContainer {
 
     new POVButton(driverController2, 0).whenPressed(() -> {
       rangeIndex = (rangeIndex + 1) % numPoints;
-      hood.setPosition(ranges[rangeIndex][0]);
+      // hood.setPosition(ranges[rangeIndex][0]);
       shooter.setSpeed(ranges[rangeIndex][1]);
 
       System.out.println("D-PAD Top, Range Index " + rangeIndex);
@@ -168,24 +159,15 @@ public class RobotContainer {
     
     new POVButton(driverController2, 180).whenPressed(() -> {
       rangeIndex = (rangeIndex - 1 + numPoints) % numPoints;
-      hood.setPosition(ranges[rangeIndex][0]);
+      // hood.setPosition(ranges[rangeIndex][0]);
       shooter.setSpeed(ranges[rangeIndex][1]);
  
       System.out.println("D-PAD Bottom, Range Index " + rangeIndex);
       SmartDashboard.putString("Shooter Range", rangeLabels[rangeIndex]);
     });
 
-    // new JoystickButton(driverController2, Button.kX.value).whenPressed(
-    //   new MoveHood(hood, ranges[rangeIndex][0]).alongWith(
-    //   new BringShooterToSpeed(shooter, ranges[rangeIndex][1]))
-    //   // .andThen(
-    //   // new SequentialCommandGroup(
-    //     // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
-    //     // new InstantCommand(() -> indexer.off())))
-    // );
-
     new JoystickButton(driverController2, Button.kX.value).whenPressed(() -> {
-      hood.setPosition(ranges[rangeIndex][0]);
+      // hood.setPosition(ranges[rangeIndex][0]);
       shooter.setSpeed(ranges[rangeIndex][1]);
     });
 
@@ -197,8 +179,8 @@ public class RobotContainer {
       new InstantCommand(() -> shooter.stopShoot(), shooter)
     );
     
-    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenPressed(new MoveArmToPosition(arm, 0, 0.1, 0.25));
-    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenPressed(new MoveArmToPosition(arm, 14, 0.05, 0.25));
+    new JoystickButton(driverController1, OIConstants.kLiftArmButton.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
+    new JoystickButton(driverController1, OIConstants.kLowerArmButton.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
 
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenReleased(() -> climber.latchFirst());
@@ -213,5 +195,20 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new MVPAuto(shooter, indexer, drive);
+  }
+
+  private void setRumble(double intensity) {
+    driverController1.setRumble(GenericHID.RumbleType.kLeftRumble, intensity);
+    driverController1.setRumble(GenericHID.RumbleType.kRightRumble, intensity);
+    driverController2.setRumble(GenericHID.RumbleType.kLeftRumble, intensity);
+    driverController2.setRumble(GenericHID.RumbleType.kRightRumble, intensity);
+  }
+
+  public void startRumble() {
+    setRumble(0.5);
+  }
+
+  public void stopRumble() {
+    setRumble(0);
   }
 }

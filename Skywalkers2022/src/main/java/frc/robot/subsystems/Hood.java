@@ -39,12 +39,12 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    double error = targetPosition - getPosition();
-    if (stop || Math.abs(error) < HOOD_TOLERANCE) {
-      setOutput(0);
-    } else {
-      setOutput(error * kP);
-    }
+    // double error = targetPosition - getPosition();
+    // if (stop || Math.abs(error) < HOOD_TOLERANCE) {
+    //   setOutput(0);
+    // } else {
+    //   setOutput(error * kP);
+    // }
 
     SmartDashboard.putNumber("Hood Position", getPosition());
   }
@@ -58,8 +58,14 @@ public class Hood extends SubsystemBase {
     stop = true;
   }
 
+  public void setOutput(double speed, boolean confirmation) {
+    if (confirmation) {
+      hoodMotor.set(MathUtil.clamp(speed, -0.4, 0.4));
+    }
+  }
+
   public void setOutput(double speed) {
-    hoodMotor.set(MathUtil.clamp(speed, -0.4, 0.4));
+    setOutput(speed, true);
   }
 
   public double getPosition() {

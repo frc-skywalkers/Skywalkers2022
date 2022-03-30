@@ -26,6 +26,6 @@ public class MVPAuto extends SequentialCommandGroup {
       new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
       new InstantCommand(() -> indexer.off()),
       new InstantCommand(() -> {System.out.println("Done");})
-    ), new DriveForDistance(drivetrain, Units.feetToMeters(-5), 1, 0.1));
+    ), new DriveForDistance(drivetrain, Units.feetToMeters(-9), 1, 0.1));
   }
 }

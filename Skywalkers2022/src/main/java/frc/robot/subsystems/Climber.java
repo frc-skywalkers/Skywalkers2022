@@ -50,8 +50,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void unlatchFirst() {
-    climberServoLeftFirst.set(0);
-    climberServoRightFirst.set(0.35);
+    climberServoLeftFirst.set(0.01);
+    climberServoRightFirst.set(0.525);
   }
 
   // public void latchSecond() {
