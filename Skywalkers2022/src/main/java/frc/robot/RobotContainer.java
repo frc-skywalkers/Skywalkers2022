@@ -131,6 +131,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(new IndexBall(indexer));
+    new JoystickButton(driverController1, OIConstants.kSlowDriveButton.value).whenPressed(() -> drive.setMaxOutput(0.3));
+
     new JoystickButton(driverController1, OIConstants.kIntakeButton.value).whenPressed(intake::intake, intake);
 
     new JoystickButton(driverController1, OIConstants.kStopRollerButton.value).whenPressed(new InstantCommand(

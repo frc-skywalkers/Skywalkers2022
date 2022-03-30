@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 
 /**
@@ -38,6 +39,7 @@ public final class Constants {
         public static final Button kStopRollerButton = Button.kB;
         public static final Button kLiftArmButton = Button.kRightBumper;
         public static final Button kLowerArmButton = Button.kLeftBumper;
+        public static final Button kSlowDriveButton = Button.kRightStick;
     }
 
     public static final class DriveConstants {
