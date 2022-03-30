@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -39,6 +40,7 @@ public class Shooter extends SubsystemBase {
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
     configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
+    configs.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 240, 255, 5);
 
     leftMaster.configAllSettings(configs);
     rightFollower.configAllSettings(configs);

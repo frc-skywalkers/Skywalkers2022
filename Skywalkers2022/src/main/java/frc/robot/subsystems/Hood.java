@@ -34,6 +34,7 @@ public class Hood extends SubsystemBase {
     hoodMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     hoodMotor.setSoftLimit(SoftLimitDirection.kForward, 150);
     hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    hoodMotor.setSmartCurrentLimit(100, 1);
   }
 
   @Override

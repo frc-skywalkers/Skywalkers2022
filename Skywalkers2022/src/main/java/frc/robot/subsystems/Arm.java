@@ -27,6 +27,7 @@ public class Arm extends SubsystemBase {
     armMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     armMotor.setSoftLimit(SoftLimitDirection.kForward, 13);
     armMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    armMotor.setSmartCurrentLimit(150, 2);
   }
 
   public void arm(double speed) {

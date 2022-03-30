@@ -25,6 +25,8 @@ public class Climber extends SubsystemBase {
     climberMotorRight.restoreFactoryDefaults();
     climberMotorLeft.setInverted(ClimberConstants.kClimberLeftInvert);
     climberMotorRight.setInverted(ClimberConstants.kClimberRightInvert);
+    climberMotorLeft.setSmartCurrentLimit(181, 2);
+    climberMotorRight.setSmartCurrentLimit(181, 2);
 
     latchFirst();
     // latchSecond();
