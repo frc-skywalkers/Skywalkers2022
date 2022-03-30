@@ -59,6 +59,8 @@ public class RobotContainer {
   private static int rangeIndex = 0;
   private static String[] rangeLabels = {"Low 3", "Miss"};
 
+  private boolean climberStarted = false;
+
   XboxController driverController1 = new XboxController(OIConstants.kDriverController1Port);
   XboxController driverController2 = new XboxController(OIConstants.kDriverController2Port);
 
@@ -86,7 +88,9 @@ public class RobotContainer {
   public RobotContainer() {
     drive.setDefaultCommand(new RunCommand(
       () -> {
-        if (drive.isTipping() /*&& !climberStarted*/) { // TODO: disable tilt code once climber has been started
+        climberStarted |= (Math.abs(driverController2.getRawAxis(OIConstants.kLeftY)) > OIConstants.kDeadZone && driverController2.getRawButton(OIConstants.kY));
+
+        if (drive.isTipping() && !climberStarted) {
           drive.arcadeDrive(drive.getTilt() * -DriveConstants.kTiltP, 0);
         } else if (driverController1.getRawButton(Button.kRightStick.value)) {
           drive.arcadeDrive(

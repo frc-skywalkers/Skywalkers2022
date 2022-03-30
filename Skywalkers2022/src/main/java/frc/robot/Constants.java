@@ -33,6 +33,8 @@ public final class Constants {
         public static final int kY = 4;
         public static final int kLeftBumper = 5;
         public static final int kRightBumper = 6;
+
+        public static final double kDeadZone = 0.075;
     }
 
     public static final class DriveConstants {

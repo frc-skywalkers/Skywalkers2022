@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Servo;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.OIConstants;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
@@ -35,7 +36,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void rotateArms(double speed, boolean enableClimberArms) {
-    if (!enableClimberArms || Math.abs(speed) < 0.075) {
+    if (!enableClimberArms || Math.abs(speed) < OIConstants.kDeadZone) {
       speed = 0;
     }
 
