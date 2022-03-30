@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -43,6 +44,8 @@ public class RobotContainer {
   private Hood hood = new Hood();
   private Shooter shooter = new Shooter();
   private Limelight limelight = new Limelight();
+
+  private SlewRateLimiter filter = new SlewRateLimiter(0.5);
 
   // private static double[][] ranges = {{8, 22}, {45, 20}, {90, 25}}; // {hood, shooter}
   // private static int numPoints = 3;
@@ -92,13 +95,13 @@ public class RobotContainer {
 
         if (drive.isTipping() && !climberStarted) {
           drive.arcadeDrive(drive.getTilt() * -DriveConstants.kTiltP, 0);
-        } else if (driverController1.getRawButton(Button.kRightStick.value)) {
+        } else if (driverController1.getRawAxis(OIConstants.kLeftTrigger) > 0.05) {
           drive.arcadeDrive(
-            -driverController1.getRawAxis(OIConstants.kLeftY) * DriveConstants.kSlowOutput,
+            -filter.calculate(driverController1.getRawAxis(OIConstants.kLeftY)) * DriveConstants.kSlowOutput,
             driverController1.getRawAxis(OIConstants.kRightX) * DriveConstants.kSlowOutput * DriveConstants.kTurnOutput);
         } else {
           drive.arcadeDrive(
-            -driverController1.getRawAxis(OIConstants.kLeftY),
+            -filter.calculate(driverController1.getRawAxis(OIConstants.kLeftY)),
             driverController1.getRawAxis(OIConstants.kRightX) * DriveConstants.kTurnOutput);
         }
       }, drive));

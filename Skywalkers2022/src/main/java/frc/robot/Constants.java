@@ -24,9 +24,13 @@ public final class Constants {
         public static final int kDriverController1Port = 0;
         public static final int kDriverController2Port = 1;
 
+        public static final int kLeftX = 0; // needs confirmation
         public static final int kLeftY = 1;
+        public static final int kLeftTrigger = 2; // needs confirmation
+        public static final int kRightTrigger = 3; // confirmation
         public static final int kRightX = 4;
         public static final int kRightY = 5;
+
         public static final int kA = 1;
         public static final int kB = 2;
         public static final int kX = 3;
