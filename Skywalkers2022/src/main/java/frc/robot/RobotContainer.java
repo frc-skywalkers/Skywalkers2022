@@ -93,7 +93,10 @@ public class RobotContainer {
       () -> {
         climberStarted |= (Math.abs(driverController2.getRawAxis(OIConstants.kLeftY)) > OIConstants.kDeadZone && driverController2.getRawButton(OIConstants.kY));
 
-        if (drive.isTipping() && !climberStarted) {
+        if (driverController1.getRawButton(OIConstants.kX)) {
+          System.out.println("x: " + limelight.getX());
+          drive.arcadeDrive(0, MathUtil.clamp(limelight.getX() * 0.05, -0.6, 0.6));
+        } else if (drive.isTipping() && !climberStarted) {
           drive.arcadeDrive(drive.getTilt() * -DriveConstants.kTiltP, 0);
         } else if (driverController1.getRawAxis(OIConstants.kLeftTrigger) > 0.05) {
           drive.arcadeDrive(
@@ -148,12 +151,6 @@ public class RobotContainer {
         intake.stopRollers();
         indexer.off();
       }, indexer, intake));
-
-    new JoystickButton(driverController1, Button.kX.value).whenHeld(new InstantCommand(
-      () -> {
-        System.out.println("x: " + limelight.getX());
-        drive.arcadeDrive(0, MathUtil.clamp(limelight.getX() * 0.05, -0.6, 0.6));
-      }, drive));
 
     new POVButton(driverController2, 0).whenPressed(() -> {
       rangeIndex = (rangeIndex + 1) % numPoints;
