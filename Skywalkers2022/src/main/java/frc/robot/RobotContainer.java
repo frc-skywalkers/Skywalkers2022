@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.DiagnosticTest;
 import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
@@ -182,12 +183,17 @@ public class RobotContainer {
     new JoystickButton(driverController2, Button.kB.value).whenPressed(
       new InstantCommand(() -> shooter.stopShoot(), shooter)
     );
+
+    // make sure comment out either lines 189, 191
+
+    // new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new DiagnosticTest(drive, shooter, hood, intake, indexer));
     
     new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
     new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
 
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenReleased(() -> climber.latchFirst());
+
   }
 
   /**

@@ -11,10 +11,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DiagnosticConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -131,5 +134,25 @@ public class Drivetrain extends SubsystemBase {
     double[] YPR = new double[3];
     imu.getYawPitchRoll(YPR);
     return YPR[1] - initialTilt;
+  }
+
+  public void runDrivetrain() {
+    // while(Timer.get() < milliseconds) {
+      setMaxOutput(0.5);
+    // }
+    // Timer.stop();
+    Timer.delay(DiagnosticConstants.runTime);
+    stop();
+  }
+
+  public void runDrivetrainleft() {
+    leftMaster.set(0.5);
+    Timer.delay(DiagnosticConstants.runTime);
+    stop();
+  }
+  public void runDrivetrainright() {
+    rightMaster.set(0.5);
+    Timer.delay(DiagnosticConstants.runTime);
+    stop();
   }
 }

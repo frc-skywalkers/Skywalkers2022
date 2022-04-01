@@ -108,4 +108,9 @@ public final class Constants {
         public static boolean kInvert = true;
         public static double kIndexerSpeed = 0.3;
     }
+
+    public static final class DiagnosticConstants {
+        public static double runTime = 5000;
+        public static double runTimeIntake = 2000;
+    }
 }
