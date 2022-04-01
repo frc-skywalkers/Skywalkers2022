@@ -58,6 +58,8 @@ public class Shooter extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Shooter Velocity", getRPS());
+    SmartDashboard.putNumber("Shooter Target", targetRPS);
+    SmartDashboard.putNumber("Shooter Voltage", leftMaster.get());
   }
 
   public void setSpeed(double rps) {

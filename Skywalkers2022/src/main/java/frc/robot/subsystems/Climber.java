@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Servo;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.OIConstants;
@@ -33,6 +33,9 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Climber Voltage", climberMotorLeft.get());
+    SmartDashboard.putNumber("Climber Left Servo", climberServoLeftFirst.getPosition());
+    SmartDashboard.putNumber("Climber Right Servo", climberServoRightFirst.getPosition());
   }
 
   public void rotateArms(double speed, boolean enableClimberArms) {

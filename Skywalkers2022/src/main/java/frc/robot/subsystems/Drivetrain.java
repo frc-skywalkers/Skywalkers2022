@@ -69,6 +69,8 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Drivetrain Left Voltage", leftMaster.get());
+    SmartDashboard.putNumber("Drivetrain Right Voltage", rightMaster.get());
     // SmartDashboard.putNumber("IMU Heading", getHeading());
     // SmartDashboard.putNumber("IMU Tilt", getTilt());
   }

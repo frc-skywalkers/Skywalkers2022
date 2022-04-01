@@ -33,7 +33,7 @@ public class MoveArmToPosition extends CommandBase {
   public void execute() {
     double dif = targetArmPos - arm.getPosition();
     double speed = MathUtil.clamp(kP * dif, -0.25, 0.25);
-    SmartDashboard.putNumber("Arm Power", speed);
+    SmartDashboard.putNumber("Arm Target", targetArmPos);
     arm.arm(speed);
   }
 

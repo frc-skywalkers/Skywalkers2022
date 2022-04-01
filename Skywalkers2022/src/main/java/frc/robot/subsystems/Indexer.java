@@ -32,15 +32,14 @@ public class Indexer extends SubsystemBase {
   // TODO: implement beam breaker sensors
 
   public enum BallColor {
-    BLUE, RED, UKNOWN;
+    BLUE, RED, UNKNOWN;
   }
 
   public Indexer() {
-
     indexerMotor.restoreFactoryDefaults();
     indexerMotor.setInverted(IndexerConstants.kInvert);
     indexerEncoder = indexerMotor.getEncoder();
-   
+
     // colorMatcher.addColorMatch(kBlue);
     // colorMatcher.addColorMatch(kRed);
   }
@@ -50,6 +49,7 @@ public class Indexer extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Proximity", colorSensor.getProximity());
     SmartDashboard.putNumber("Indexer Velocity", getVelocity());
+    SmartDashboard.putNumber("Indexer Voltage", indexerMotor.get());
   }
 
   public void setOutput(double speed) {
@@ -57,7 +57,6 @@ public class Indexer extends SubsystemBase {
       speed = 0;
     }
     indexerMotor.set(speed);
-    SmartDashboard.putNumber("Indxer Current", indexerMotor.getOutputCurrent());
   }
 
   public void on() {
@@ -94,7 +93,7 @@ public class Indexer extends SubsystemBase {
   //   } else if (match.color == kRed) {
   //     return BallColor.RED;
   //   } else {
-  //     return BallColor.UKNOWN;
+  //     return BallColor.UNKNOWN;
   //   }
 
   // }
