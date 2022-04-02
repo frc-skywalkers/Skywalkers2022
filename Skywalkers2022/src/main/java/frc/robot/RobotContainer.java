@@ -186,9 +186,9 @@ public class RobotContainer {
 
     // make sure comment out either lines 189, 191
 
-    // new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new DiagnosticTest(drive, shooter, hood, intake, indexer));
+    new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new DiagnosticTest(drive, shooter, hood, intake, indexer, arm));
     
-    new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
+    // new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
     new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
 
     new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(() -> climber.unlatchFirst());

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
@@ -22,29 +23,28 @@ public class DiagnosticTest extends CommandBase {
   private Intake intake;
   private Indexer indexer;
   private boolean fin = false;
+  private Arm arm;
 
-  public DiagnosticTest(Drivetrain drivetrain, Shooter shooter, Hood hood, Intake intake, Indexer indexer) {
+  public DiagnosticTest(Drivetrain drivetrain, Shooter shooter, Hood hood, Intake intake, Indexer indexer, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.hood = hood;
     this.intake = intake;
     this.indexer = indexer;
+    this.arm = arm;
     addRequirements(drivetrain);
     addRequirements(shooter);
     addRequirements(hood);
     addRequirements(intake);
     addRequirements(indexer);
+    addRequirements(arm);
     fin = false;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+  public void initialize() {
     updateUser("Testing Drivetrain");
     drivetrain.runDrivetrain();
     updateUser("Testing right drivetrain");
@@ -59,6 +59,14 @@ public class DiagnosticTest extends CommandBase {
     intake.runIntake();
     updateUser("Running indexer");
     indexer.runIndexer();
+    updateUser("Running arm");
+    arm.runArm();
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+
     fin = false;
   }
 

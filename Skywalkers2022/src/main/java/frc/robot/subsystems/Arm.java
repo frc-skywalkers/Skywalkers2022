@@ -9,9 +9,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.DiagnosticConstants;
+import frc.robot.Constants.IntakeConstants;
 
 public class Arm extends SubsystemBase {
   private final CANSparkMax armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
@@ -47,5 +50,13 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arm Encoder", getPosition());
     SmartDashboard.putNumber("Arm Voltage", armMotor.get());
+  }
+
+  public void runArm() {
+    arm(0.6);
+    Timer.delay(DiagnosticConstants.runTimeIntake);
+    arm(-0.6);
+    Timer.delay(DiagnosticConstants.runTimeIntake);
+    stop();
   }
 }
