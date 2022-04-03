@@ -16,7 +16,6 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
     public static final class OIConstants {
         public static final int kDriverController1Port = 0;
         public static final int kDriverController2Port = 1;
@@ -63,9 +62,6 @@ public final class Constants {
     public static final class ClimberConstants {
         public static final int kMotorLeftPort = 5;
         public static final int kMotorRightPort = 14;
-        public static final int kServoLeftFirstPort = 6;
-        public static final int kServoRightFirstPort = 9;
-        public static final double kInitialSpeedControl = 0.7;
         public static final boolean kClimberLeftInvert = false;
         public static final boolean kClimberRightInvert = false;
     }
@@ -74,19 +70,12 @@ public final class Constants {
         public static final int kIntakeMotor = 8;
         public static final double kMaxOutput = 1;
         public static final boolean kIntakeInvert = true;
-        public static double kArmThreshold;
-        public static int kArmMotor;
-        public static boolean kArmInvert;
-        public static double kMaxArmThreshold;
-        public static double kMinArmThreshold;
     }
 
     public static final class ArmConstants {
         public static final int kMotorPort = 23;
         public static final double kMaxOutput = 0.3;
         public static final boolean kArmInvert = false;
-        public static final double kLowerArmSpeed = 0.1;
-        public static final double kLiftArmSpeed = -0.1; // l neg
     }
 
     public static final class ShooterConstants {

@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
@@ -16,8 +15,6 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   private final CANSparkMax climberMotorLeft = new CANSparkMax(ClimberConstants.kMotorLeftPort, MotorType.kBrushless);
   private final CANSparkMax climberMotorRight = new CANSparkMax(ClimberConstants.kMotorRightPort, MotorType.kBrushless);
-  private final Servo climberServoLeftFirst = new Servo(ClimberConstants.kServoLeftFirstPort);
-  private final Servo climberServoRightFirst = new Servo(ClimberConstants.kServoRightFirstPort);
 
   public Climber() {
     climberMotorLeft.restoreFactoryDefaults();
@@ -26,16 +23,12 @@ public class Climber extends SubsystemBase {
     climberMotorRight.setInverted(ClimberConstants.kClimberRightInvert);
     climberMotorLeft.setSmartCurrentLimit(181, 2);
     climberMotorRight.setSmartCurrentLimit(181, 2);
-
-    latchFirst();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Climber Voltage", climberMotorLeft.get());
-    SmartDashboard.putNumber("Climber Left Servo", climberServoLeftFirst.getPosition());
-    SmartDashboard.putNumber("Climber Right Servo", climberServoRightFirst.getPosition());
   }
 
   public void rotateArms(double speed, boolean enableClimberArms) {
@@ -45,15 +38,5 @@ public class Climber extends SubsystemBase {
 
     climberMotorLeft.set(-speed);
     climberMotorRight.set(speed);
-  }
-
-  public void latchFirst() {
-    climberServoLeftFirst.set(0.45);
-    climberServoRightFirst.set(0);
-  }
-
-  public void unlatchFirst() {
-    climberServoLeftFirst.set(0.01);
-    climberServoRightFirst.set(0.525);
   }
 }
