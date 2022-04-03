@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 
@@ -16,7 +15,6 @@ public class MoveHood extends CommandBase {
   public MoveHood(Hood hood, double target) {
     this.hood = hood;
     targetPos = target;
-    SmartDashboard.putNumber("Target Hood", targetPos);
     addRequirements(hood);
   }
 

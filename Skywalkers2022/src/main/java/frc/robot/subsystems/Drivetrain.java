@@ -11,13 +11,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.DiagnosticConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class Drivetrain extends SubsystemBase {
@@ -33,7 +30,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
-  private final PigeonIMU imu = null; //new PigeonIMU(DriveConstants.PigeonIMUPort);
+  private final PigeonIMU imu = new PigeonIMU(10);
   private double initialTilt = 0;
 
   public Drivetrain() {
@@ -66,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
 
     drive.setMaxOutput(DriveConstants.kMaxOutput);
 
-    // resetIMU();
+    resetIMU();
   }
 
   @Override
@@ -74,8 +71,8 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Drivetrain Left Voltage", leftMaster.get());
     SmartDashboard.putNumber("Drivetrain Right Voltage", rightMaster.get());
-    // SmartDashboard.putNumber("IMU Heading", getHeading());
-    // SmartDashboard.putNumber("IMU Tilt", getTilt());
+    SmartDashboard.putNumber("IMU Heading", getHeading());
+    SmartDashboard.putNumber("IMU Tilt", getTilt());
   }
 
   public void stop() {
@@ -121,7 +118,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public boolean isTipping() {
-    return getTilt() > DriveConstants.kTiltThreshold;
+    return Math.abs(getTilt()) > DriveConstants.kTiltThreshold;
   }
 
   public double getHeading() {
@@ -133,26 +130,6 @@ public class Drivetrain extends SubsystemBase {
   public double getTilt() {
     double[] YPR = new double[3];
     imu.getYawPitchRoll(YPR);
-    return YPR[1] - initialTilt;
-  }
-
-  public void runDrivetrain() {
-    // while(Timer.get() < milliseconds) {
-      setMaxOutput(0.5);
-    // }
-    // Timer.stop();
-    Timer.delay(DiagnosticConstants.runTime);
-    stop();
-  }
-
-  public void runDrivetrainleft() {
-    leftMaster.set(0.5);
-    Timer.delay(DiagnosticConstants.runTime);
-    stop();
-  }
-  public void runDrivetrainright() {
-    rightMaster.set(0.5);
-    Timer.delay(DiagnosticConstants.runTime);
-    stop();
+    return YPR[2] - initialTilt;
   }
 }

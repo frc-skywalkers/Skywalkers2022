@@ -18,6 +18,7 @@ public class Limelight extends SubsystemBase {
   private double x;
   private double y;
   private double distance;
+  private double userDistance = 10;
 
   public Limelight() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -30,6 +31,13 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Limelight X", x);
     SmartDashboard.putNumber("Limelight Y", y);
     SmartDashboard.putNumber("Limelight Distance", distance);
+    SmartDashboard.putNumber("User Distance", userDistance);
+  }
+
+  public void changeDistance(double delta) {
+    if (Math.abs(delta) > 0.075) {
+      userDistance += delta;
+    }
   }
 
   public void updateValues() {
@@ -48,5 +56,9 @@ public class Limelight extends SubsystemBase {
 
   public double getDistance() {
     return distance;
+  }
+
+  public double getUserDistance() {
+    return userDistance;
   }
 }

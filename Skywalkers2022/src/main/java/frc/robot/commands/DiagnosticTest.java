@@ -4,9 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -14,74 +16,27 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-public class DiagnosticTest extends CommandBase {
+public class DiagnosticTest extends SequentialCommandGroup {
   /** Creates a new DiagnosticTest. */
 
-  private Drivetrain drivetrain;
-  private Shooter shooter;
-  private Hood hood;
-  private Intake intake;
-  private Indexer indexer;
-  private boolean fin = false;
-  private Arm arm;
-
   public DiagnosticTest(Drivetrain drivetrain, Shooter shooter, Hood hood, Intake intake, Indexer indexer, Arm arm) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.drivetrain = drivetrain;
-    this.shooter = shooter;
-    this.hood = hood;
-    this.intake = intake;
-    this.indexer = indexer;
-    this.arm = arm;
-    addRequirements(drivetrain);
-    addRequirements(shooter);
-    addRequirements(hood);
-    addRequirements(intake);
-    addRequirements(indexer);
-    addRequirements(arm);
-    fin = false;
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    updateUser("Testing Drivetrain");
-    drivetrain.runDrivetrain();
-    updateUser("Testing right drivetrain");
-    drivetrain.runDrivetrainright();
-    updateUser("Testing left drivetrain");
-    drivetrain.runDrivetrainleft();
-    updateUser("Testing hood");
-    hood.runHood();
-    updateUser("Testing shooter");
-    shooter.testShooter();
-    updateUser("Testing intake");
-    intake.runIntake();
-    updateUser("Running indexer");
-    indexer.runIndexer();
-    updateUser("Running arm");
-    arm.runArm();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    fin = false;
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return fin;
-  }
-
-  private void updateUser(String s) {
-    SmartDashboard.putString("Diagnostic info", s);
-    System.out.println(s);
+    addCommands(new SequentialCommandGroup(
+      new RunCommand(() -> drivetrain.arcadeDrive(0.5, 0), drivetrain).withTimeout(1),
+      new InstantCommand(() -> drivetrain.stop(), drivetrain),
+      new MoveHood(hood, 100),
+      new MoveHood(hood, 0),
+      new BringShooterToSpeed(shooter, 25),
+      new WaitCommand(2),
+      new InstantCommand(() -> shooter.stopShoot(), intake),
+      new MoveArmToPosition(arm, 10, 0.125, 1),
+      new WaitCommand(1),
+      new RunCommand(() -> intake.intake(), intake).withTimeout(1.5),
+      new InstantCommand(() -> intake.stopRollers(), intake),
+      new WaitCommand(1),
+      new MoveArmToPosition(arm, 0, 0.075, 1),
+      new WaitCommand(1),
+      new RunCommand(() -> indexer.on(), indexer).withTimeout(1.5),
+      new InstantCommand(() -> indexer.off(), indexer)
+    ));
   }
 }

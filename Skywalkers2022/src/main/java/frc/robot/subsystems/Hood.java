@@ -10,10 +10,8 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DiagnosticConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class Hood extends SubsystemBase {
@@ -42,12 +40,12 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // double error = targetPosition - getPosition();
-    // if (stop || Math.abs(error) < HOOD_TOLERANCE) {
-    //   setOutput(0);
-    // } else {
-    //   setOutput(error * kP);
-    // }
+    double error = targetPosition - getPosition();
+    if (stop || Math.abs(error) < HOOD_TOLERANCE) {
+      setOutput(0);
+    } else {
+      setOutput(error * kP);
+    }
 
     SmartDashboard.putNumber("Hood Position", getPosition());
     SmartDashboard.putNumber("Hood Target", targetPosition);
@@ -83,13 +81,5 @@ public class Hood extends SubsystemBase {
 
   public boolean atPosition(double tolerance) {
     return atPosition(targetPosition, tolerance);
-  }
-
-  public void runHood() {
-    setOutput(0.3);
-    Timer.delay(DiagnosticConstants.runTime);
-    setOutput(-0.3);
-    Timer.delay(DiagnosticConstants.runTime);
-    setOutput(0.0);
   }
 }

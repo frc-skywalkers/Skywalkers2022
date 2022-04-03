@@ -5,10 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController.Button;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -24,10 +21,10 @@ public final class Constants {
         public static final int kDriverController1Port = 0;
         public static final int kDriverController2Port = 1;
 
-        public static final int kLeftX = 0; // needs confirmation
+        public static final int kLeftX = 0;
         public static final int kLeftY = 1;
-        public static final int kLeftTrigger = 2; // needs confirmation
-        public static final int kRightTrigger = 3; // confirmation
+        public static final int kLeftTrigger = 2;
+        public static final int kRightTrigger = 3;
         public static final int kRightX = 4;
         public static final int kRightY = 5;
 
@@ -59,9 +56,8 @@ public final class Constants {
         public static final double kWheelDiameter = Units.inchesToMeters(6.0);
         public static final double kDistancePerPulseFactor = kWheelDiameter * Math.PI * kGearRatio / 2048;
 
-        public static final TalonSRX PigeonIMUPort = null;
-        public static final double kTiltThreshold = 10;
-        public static final double kTiltP = 0.03;
+        public static final double kTiltThreshold = 5;
+        public static final double kTiltP = 0.05;
     }
 
     public static final class ClimberConstants {
@@ -76,7 +72,7 @@ public final class Constants {
     
     public static final class IntakeConstants {
         public static final int kIntakeMotor = 8;
-        public static final double kMaxOutput = 0.8;
+        public static final double kMaxOutput = 1;
         public static final boolean kIntakeInvert = true;
         public static double kArmThreshold;
         public static int kArmMotor;
@@ -107,10 +103,5 @@ public final class Constants {
         public static int kMotorPort = 25;
         public static boolean kInvert = true;
         public static double kIndexerSpeed = 0.3;
-    }
-
-    public static final class DiagnosticConstants {
-        public static double runTime = 5000;
-        public static double runTimeIntake = 2000;
     }
 }

@@ -5,13 +5,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DiagnosticConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
@@ -27,6 +24,8 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Intake Voltage", intakeMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Intake Current", intakeMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Intake Temperature", intakeMotor.getMotorTemperature());
   }
 
   public void intake() {
@@ -37,19 +36,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.stopMotor();
   }
 
-
   public void setRollerOutput(double speed) {
     intakeMotor.set(speed);
-  }
-
-  public double getRollerOutput() {
-    return intakeMotor.getAppliedOutput(); // need to test this
-  }
-
-  public void runIntake() {
-    setRollerOutput(IntakeConstants.kMaxOutput);
-    Timer.delay(DiagnosticConstants.runTimeIntake);
-    setRollerOutput(-IntakeConstants.kMaxOutput);
-    Timer.delay(DiagnosticConstants.runTimeIntake);
   }
 }
