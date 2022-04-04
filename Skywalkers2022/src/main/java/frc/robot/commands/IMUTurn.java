@@ -26,7 +26,7 @@ public class IMUTurn extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.resetIMU();
+    // drivetrain.resetIMU();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,12 +34,14 @@ public class IMUTurn extends CommandBase {
   public void execute() {
     double dif = targetAngle - drivetrain.getHeading();
     dif = MathUtil.clamp(dif * kP, -0.5, 0.5);
-    drivetrain.arcadeDrive(0, dif);
+    drivetrain.arcadeDrive(0, -dif);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
 
   // Returns true when the command should end.
   @Override

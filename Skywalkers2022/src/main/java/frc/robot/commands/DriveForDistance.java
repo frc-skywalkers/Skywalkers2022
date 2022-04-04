@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -14,12 +15,14 @@ public class DriveForDistance extends CommandBase {
   private double targetDistance;
   private double kP;
   private double tolerance;
+  private double targetAngle;
 
   public DriveForDistance(Drivetrain drivetrain, double targetDistance, double kP, double tolerance) {
     this.drivetrain = drivetrain;
     this.targetDistance = targetDistance;
     this.kP = kP;
     this.tolerance = tolerance;
+    
     addRequirements(this.drivetrain);
   }
 
@@ -27,6 +30,7 @@ public class DriveForDistance extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.resetDrivetrainEncoders();
+    this.targetAngle = drivetrain.getHeading();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,12 +38,17 @@ public class DriveForDistance extends CommandBase {
   public void execute() {
     double dif = targetDistance - drivetrain.getAverageEncoderDistance();
     dif = MathUtil.clamp(dif * kP, -0.5, 0.5);
-    drivetrain.arcadeDrive(dif, 0);
+    double angleDif = targetAngle - drivetrain.getHeading();
+    angleDif = MathUtil.clamp(angleDif * 0.02, -0.3, 0.3);
+    SmartDashboard.putNumber("Angle Dif", angleDif);
+    drivetrain.arcadeDrive(dif, angleDif);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
 
   // Returns true when the command should end.
   @Override

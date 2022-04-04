@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -16,9 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DiagnosticTest;
+import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.IMUTurn;
 import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
+import frc.robot.commands.TwoBallAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
@@ -104,7 +108,7 @@ public class RobotContainer {
 
     limelight.setDefaultCommand(new RunCommand(
       () ->
-        limelight.updateValues(),
+        limelight.updateValues(feetFromGoal),
       limelight));
 
     // Configure the button bindings
@@ -161,8 +165,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new DiagnosticTest(drive, shooter, hood, intake, indexer, arm);
+    // return new DiagnosticTest(drive, shooter, hood, intake, indexer, arm);
     // return new MVPAuto(shooter, indexer, drive);
+    // return new IMUTurn(drive, 180, 0.1, 2);
+    return new TwoBallAuto(shooter, hood, arm, indexer, intake, drive);
+    // return new DriveForDistance(drive, Units.feetToMeters(5), 1, 0.5);
   }
 
   private void setRumble(double intensity) {

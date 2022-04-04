@@ -8,7 +8,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -19,18 +21,34 @@ import frc.robot.subsystems.Shooter;
 public class TwoBallAuto extends SequentialCommandGroup {
   /** Creates a new TwoBallAuto. */
 
-  public TwoBallAuto(Shooter shooter, Indexer indexer, Intake intake, Drivetrain drivetrain) {
+  public TwoBallAuto(Shooter shooter, Hood hood, Arm arm, Indexer indexer, Intake intake, Drivetrain drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SequentialCommandGroup(
-      new IndexBall(indexer).alongWith(new DriveForDistance(drivetrain, Units.feetToMeters(5), 1, 0.1)),
-      new IMUTurn(drivetrain, 180, 0.7, 1),
-      new BringShooterToSpeed(shooter, 20),
-      new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
+      new InstantCommand(() -> drivetrain.resetIMU()),
+      new BringShooterToSpeed(shooter, 20.2).alongWith(new MoveHood(hood, 2.1)),
+      new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2),
+      new InstantCommand(() -> indexer.off(), indexer),
+      new InstantCommand(() -> shooter.stopShoot(), shooter),
+      // new IndexBall(indexer).alongWith(new DriveForDistance(drivetrain, Units.feetToMeters(5), 1, 0.1)),
+      new IMUTurn(drivetrain, 180, 0.2, 2),
+      new MoveArmToPosition(arm, 14, 0.075, 0.25),
+      new InstantCommand(() -> intake.intake()),
+      new InstantCommand(() -> indexer.setOutput(0.9)),
+      new DriveForDistance(drivetrain, Units.feetToMeters(4), 1, 0.3),
+      new InstantCommand(() -> intake.stopRollers()),
       new InstantCommand(() -> indexer.off()),
-      new BringShooterToSpeed(shooter, 20),
-      new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
-      new InstantCommand(() -> indexer.off()),
+      new MoveArmToPosition(arm, 0, 0.125, 0.25),
+      new IMUTurn(drivetrain, 0, 0.2, 2),
+      new BringShooterToSpeed(shooter, 21.9).alongWith(new MoveHood(hood, 33.4)),
+      new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2),
+      new InstantCommand(() -> indexer.off(), indexer),
+      new InstantCommand(() -> shooter.stopShoot(), shooter),
+      new DriveForDistance(drivetrain, Units.feetToMeters(-5), 1, 0.3),
+      // new BringShooterToSpeed(shooter, 20),
+      // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
+      // new InstantCommand(() -> indexer.off()),
+
       new InstantCommand(() -> {System.out.println("Done");})
     ));
   }

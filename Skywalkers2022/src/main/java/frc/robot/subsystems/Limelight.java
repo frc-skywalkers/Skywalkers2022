@@ -32,10 +32,11 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Limelight Distance", distance);
   }
 
-  public void updateValues() {
+  public void updateValues(double feetFromGoal) {
     x = table.getEntry("tx").getDouble(0);
     y = table.getEntry("ty").getDouble(0);
     distance = (GOAL_HEIGHT - CAM_HEIGHT) / Math.tan(Math.toRadians(CAM_MOUNTING_ANGLE + y));
+    SmartDashboard.putNumber("Distance", feetFromGoal);
   }
 
   public double getX() {
