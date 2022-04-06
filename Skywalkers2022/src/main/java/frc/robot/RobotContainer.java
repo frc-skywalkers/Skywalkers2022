@@ -149,23 +149,25 @@ public class RobotContainer {
     //   shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
     // });
 
-    new JoystickButton(driverController2, Button.kX.value).whenPressed(new RunCommand(() -> {
+    new JoystickButton(driverController2, Button.kX.value).whenPressed(new InstantCommand(() -> limelight.ledOn()).andThen(new RunCommand(() -> {
       hood.setPosition(MathUtil.clamp(9.18 * limelight.getDistance() / 12 - 59.9, 0, 90));
       shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
-    }, shooter, hood));
+    }, shooter, hood)));
 
     new JoystickButton(driverController2, Button.kA.value).whenPressed(
         new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2)
     );
 
     new JoystickButton(driverController2, Button.kB.value).whenPressed(
-      new InstantCommand(() -> shooter.stopShoot(), shooter)
+      new InstantCommand(() -> shooter.stopShoot(), shooter).andThen(new InstantCommand(() -> limelight.ledOff()))
     );
 
     new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
     new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
 
-    new JoystickButton(driverController1, Button.kX.value).whenPressed(new AlignRobotShooter(limelight, 0.2, 1.0, drive));
+    new JoystickButton(driverController1, Button.kX.value).whenPressed(
+      new InstantCommand(() -> limelight.ledOn()).andThen(
+      new AlignRobotShooter(limelight, 0.2, 1.0, drive)));
 
   }
 

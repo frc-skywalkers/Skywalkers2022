@@ -23,6 +23,7 @@ public class Limelight extends SubsystemBase {
   public Limelight() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
     table.getEntry("pipeline").setNumber(1);
+    ledOff();
   }
 
   @Override
