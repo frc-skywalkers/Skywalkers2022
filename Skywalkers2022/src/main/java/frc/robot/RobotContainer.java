@@ -9,6 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AlignRobotShooter;
 import frc.robot.commands.DiagnosticTest;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.IMUTurn;
@@ -108,7 +110,7 @@ public class RobotContainer {
 
     limelight.setDefaultCommand(new RunCommand(
       () ->
-        limelight.updateValues(feetFromGoal),
+        limelight.updateValues(),
       limelight));
 
     // Configure the button bindings
@@ -125,7 +127,7 @@ public class RobotContainer {
     // new JoystickButton(driverController1, Button.kA.value).whenPressed(new IndexBall(indexer));
 
     new JoystickButton(driverController1, Button.kA.value).whenPressed(
-      new InstantCommand(() -> intake.intake(), intake)
+      new InstantCommand(() -> intake.intake(), intake).alongWith(new IndexBall(indexer))
     );
 
     new JoystickButton(driverController1, Button.kB.value).whenPressed(new InstantCommand(
@@ -142,10 +144,15 @@ public class RobotContainer {
       feetFromGoal -= 0.5;
     });
 
-    new JoystickButton(driverController2, Button.kX.value).whenPressed(() -> {
-      hood.setPosition(MathUtil.clamp(9.18 * feetFromGoal - 59.9, 0, 90));
-      shooter.setSpeed(MathUtil.clamp(0.503 * feetFromGoal + 16.8, 0, 26));
-    });
+    // new JoystickButton(driverController2, Button.kX.value).whenPressed(() -> {
+    //   hood.setPosition(MathUtil.clamp(9.18 * limelight.getDistance() / 12 - 59.9, 0, 90));
+    //   shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
+    // });
+
+    new JoystickButton(driverController2, Button.kX.value).whenPressed(new RunCommand(() -> {
+      hood.setPosition(MathUtil.clamp(9.18 * limelight.getDistance() / 12 - 59.9, 0, 90));
+      shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
+    }, shooter, hood));
 
     new JoystickButton(driverController2, Button.kA.value).whenPressed(
         new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2)
@@ -157,7 +164,11 @@ public class RobotContainer {
 
     new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
     new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
+
+    new JoystickButton(driverController1, Button.kX.value).whenPressed(new AlignRobotShooter(limelight, 0.2, 1.0, drive));
+
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

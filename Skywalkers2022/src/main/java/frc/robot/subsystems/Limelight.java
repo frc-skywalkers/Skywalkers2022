@@ -10,9 +10,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
-  private static final double CAM_MOUNTING_ANGLE = 15; // TODO: verify with mounting
-  private static final double CAM_HEIGHT = 26; // TODO: verify with mounting
+  private static final double CAM_MOUNTING_ANGLE = 35; // TODO: verify with mounting
+  private static final double CAM_HEIGHT = 27.5; // TODO: verify with mounting
   private static final double GOAL_HEIGHT = 104;
+  private static final double DISTANCE_OFFSET = 17;
 
   private NetworkTable table;
   private double x;
@@ -21,7 +22,7 @@ public class Limelight extends SubsystemBase {
 
   public Limelight() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
-    table.getEntry("pipeline").setNumber(0);
+    table.getEntry("pipeline").setNumber(1);
   }
 
   @Override
@@ -29,14 +30,16 @@ public class Limelight extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Limelight X", x);
     SmartDashboard.putNumber("Limelight Y", y);
-    SmartDashboard.putNumber("Limelight Distance", distance);
+    // SmartDashboard.putNumber("Limelight Distance", distance);
+    updateValues();
   }
 
-  public void updateValues(double feetFromGoal) {
+  public void updateValues() {
     x = table.getEntry("tx").getDouble(0);
     y = table.getEntry("ty").getDouble(0);
     distance = (GOAL_HEIGHT - CAM_HEIGHT) / Math.tan(Math.toRadians(CAM_MOUNTING_ANGLE + y));
-    SmartDashboard.putNumber("Distance", feetFromGoal);
+    distance += DISTANCE_OFFSET;
+    SmartDashboard.putNumber("Distance", distance);
   }
 
   public double getX() {
@@ -49,5 +52,13 @@ public class Limelight extends SubsystemBase {
 
   public double getDistance() {
     return distance;
+  }
+
+  public void ledOff() {
+    table.getEntry("ledMode").setNumber(1);
+  }
+
+  public void ledOn() {
+    table.getEntry("ledMode").setNumber(0);
   }
 }
