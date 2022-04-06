@@ -11,37 +11,31 @@ import frc.robot.subsystems.Limelight;
 
 public class AlignRobotShooter extends CommandBase {
   /** Creates a new AlignRobotShooter. */
-
-
   Limelight limelight;
   Drivetrain drivetrain;
   double kP;
   double tolerance;
   double ang;
 
-
   public AlignRobotShooter(Limelight limelight, double kP, double tolerance, Drivetrain drivetrain) {
     this.limelight = limelight;
     this.kP = kP;
     this.tolerance = tolerance;
     this.drivetrain = drivetrain;
+
     addRequirements(drivetrain);
     addRequirements(limelight);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    ang = limelight.getX();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     ang = limelight.getX();
-    double speed = ang * kP;
-    speed = MathUtil.clamp(speed, -0.3, 0.3);
+    double speed = MathUtil.clamp(ang * kP, -0.3, 0.3);
     drivetrain.arcadeDrive(0, speed);
   }
 

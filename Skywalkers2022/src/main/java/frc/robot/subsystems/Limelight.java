@@ -10,8 +10,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
-  private static final double CAM_MOUNTING_ANGLE = 35; // TODO: verify with mounting
-  private static final double CAM_HEIGHT = 27.5; // TODO: verify with mounting
+  private static final double CAM_MOUNTING_ANGLE = 35;
+  private static final double CAM_HEIGHT = 27.5;
   private static final double GOAL_HEIGHT = 104;
   private static final double DISTANCE_OFFSET = 17;
 
@@ -31,7 +31,6 @@ public class Limelight extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Limelight X", x);
     SmartDashboard.putNumber("Limelight Y", y);
-    // SmartDashboard.putNumber("Limelight Distance", distance);
     updateValues();
   }
 

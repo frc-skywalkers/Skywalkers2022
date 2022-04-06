@@ -13,6 +13,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -21,16 +22,13 @@ import frc.robot.subsystems.Shooter;
 public class TwoBallAuto extends SequentialCommandGroup {
   /** Creates a new TwoBallAuto. */
 
-  public TwoBallAuto(Shooter shooter, Hood hood, Arm arm, Indexer indexer, Intake intake, Drivetrain drivetrain) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+  public TwoBallAuto(Drivetrain drivetrain, Shooter shooter, Hood hood, Indexer indexer, Arm arm, Intake intake, Limelight limelight) {
     addCommands(new SequentialCommandGroup(
       new InstantCommand(() -> drivetrain.resetIMU()),
       new BringShooterToSpeed(shooter, 20.2).alongWith(new MoveHood(hood, 2.1)),
       new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2),
       new InstantCommand(() -> indexer.off(), indexer),
       new InstantCommand(() -> shooter.stopShoot(), shooter),
-      // new IndexBall(indexer).alongWith(new DriveForDistance(drivetrain, Units.feetToMeters(5), 1, 0.1)),
       new IMUTurn(drivetrain, 180, 0.2, 2),
       new MoveArmToPosition(arm, 14, 0.075, 0.25),
       new InstantCommand(() -> intake.intake()),
@@ -40,15 +38,12 @@ public class TwoBallAuto extends SequentialCommandGroup {
       new InstantCommand(() -> indexer.off()),
       new MoveArmToPosition(arm, 0, 0.125, 0.25),
       new IMUTurn(drivetrain, 0, 0.2, 2),
+      new AlignRobotShooter(limelight, 0.2, 1, drivetrain),
       new BringShooterToSpeed(shooter, 21.9).alongWith(new MoveHood(hood, 33.4)),
       new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2),
       new InstantCommand(() -> indexer.off(), indexer),
       new InstantCommand(() -> shooter.stopShoot(), shooter),
       new DriveForDistance(drivetrain, Units.feetToMeters(-5), 1, 0.3),
-      // new BringShooterToSpeed(shooter, 20),
-      // new RunCommand(() -> indexer.on(), indexer).withTimeout(2),
-      // new InstantCommand(() -> indexer.off()),
-
       new InstantCommand(() -> {System.out.println("Done");})
     ));
   }

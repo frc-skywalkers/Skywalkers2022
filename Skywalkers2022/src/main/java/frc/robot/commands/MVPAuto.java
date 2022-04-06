@@ -19,8 +19,6 @@ public class MVPAuto extends SequentialCommandGroup {
   /** Creates a new MVPAuto. */
 
   public MVPAuto(Shooter shooter, Indexer indexer, Drivetrain drivetrain) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SequentialCommandGroup(
       new BringShooterToSpeed(shooter, 20),
       new RunCommand(() -> indexer.on(), indexer).withTimeout(2),

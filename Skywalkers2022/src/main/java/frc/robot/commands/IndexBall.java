@@ -6,47 +6,37 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 
 public class IndexBall extends CommandBase {
   /** Creates a new IndexBall. */
   private Indexer indexer;
-  // Intake intake;
-  private boolean ballToBeIndexed;
+  private boolean ballToBeIndexed = true;
 
   public IndexBall(Indexer indexer) {
     this.indexer = indexer;
-    // this.intake = intake;
+
     addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    ballToBeIndexed = true;
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (indexer.isBallAtExit()) {
-      ballToBeIndexed = false;
-    } else {
-      ballToBeIndexed = true;
-    }
+    ballToBeIndexed = !indexer.isBallAtExit();
 
     if (ballToBeIndexed) {
       indexer.on();
     } else {
       indexer.off();
     }
-    // intake.intake();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // intake.stopRollers();
     indexer.off();
   }
 

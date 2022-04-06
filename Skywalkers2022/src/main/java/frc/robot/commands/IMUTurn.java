@@ -20,14 +20,13 @@ public class IMUTurn extends CommandBase {
     this.targetAngle = targetAngle;
     this.kP = kP;
     this.tolerance = tolerance;
+    
     addRequirements(this.drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // drivetrain.resetIMU();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
