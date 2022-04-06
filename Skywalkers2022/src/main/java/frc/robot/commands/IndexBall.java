@@ -10,7 +10,6 @@ import frc.robot.subsystems.Indexer;
 public class IndexBall extends CommandBase {
   /** Creates a new IndexBall. */
   private Indexer indexer;
-  private boolean ballToBeIndexed = true;
 
   public IndexBall(Indexer indexer) {
     this.indexer = indexer;
