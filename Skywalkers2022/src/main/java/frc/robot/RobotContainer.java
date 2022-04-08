@@ -119,7 +119,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(driverController1, Button.kA.value).whenPressed(
-      new InstantCommand(() -> intake.intake(), intake).alongWith(new IndexBall(indexer))
+      new InstantCommand(() -> intake.intake(), intake)
+      .alongWith(new IndexBall(indexer))
     );
 
     new JoystickButton(driverController1, Button.kB.value).whenPressed(new InstantCommand(

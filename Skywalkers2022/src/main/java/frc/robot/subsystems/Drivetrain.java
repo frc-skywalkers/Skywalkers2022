@@ -51,15 +51,15 @@ public class Drivetrain extends SubsystemBase {
     leftFollower.follow(leftMaster);
     rightFollower.follow(rightMaster);
 
-    leftMaster.setNeutralMode(NeutralMode.Coast);
-    leftFollower.setNeutralMode(NeutralMode.Coast);
-    rightMaster.setNeutralMode(NeutralMode.Coast);
-    rightFollower.setNeutralMode(NeutralMode.Coast);
+    // leftMaster.setNeutralMode(NeutralMode.Coast);
+    // leftFollower.setNeutralMode(NeutralMode.Coast);
+    // rightMaster.setNeutralMode(NeutralMode.Coast);
+    // rightFollower.setNeutralMode(NeutralMode.Coast);
 
-    // leftMaster.setNeutralMode(NeutralMode.Brake);
-    // leftFollower.setNeutralMode(NeutralMode.Brake);
-    // rightMaster.setNeutralMode(NeutralMode.Brake);
-    // rightFollower.setNeutralMode(NeutralMode.Brake);
+    leftMaster.setNeutralMode(NeutralMode.Brake);
+    leftFollower.setNeutralMode(NeutralMode.Brake);
+    rightMaster.setNeutralMode(NeutralMode.Brake);
+    rightFollower.setNeutralMode(NeutralMode.Brake);
 
     leftMaster.setInverted(DriveConstants.kLeftInvertType);
     leftFollower.setInverted(DriveConstants.kLeftInvertType);

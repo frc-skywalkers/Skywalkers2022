@@ -68,14 +68,14 @@ public final class Constants {
     
     public static final class IntakeConstants {
         public static final int kIntakeMotor = 8;
-        public static final double kMaxOutput = 1;
+        public static final double kMaxOutput = 0.7;
         public static final boolean kIntakeInvert = true;
     }
 
     public static final class ArmConstants {
         public static final int kMotorPort = 23;
         public static final double kMaxOutput = 0.3;
-        public static final boolean kArmInvert = false;
+        public static final boolean kArmInvert = true;
     }
 
     public static final class ShooterConstants {
