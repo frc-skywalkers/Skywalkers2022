@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.Shooter;
 public class DiagnosticTest extends SequentialCommandGroup {
   /** Creates a new DiagnosticTest. */
 
-  public DiagnosticTest(Drivetrain drivetrain, Shooter shooter, Hood hood, Intake intake, Indexer indexer, Arm arm) {
+  public DiagnosticTest(Drivetrain drivetrain, Shooter shooter, Hood hood, Intake intake, Indexer indexer, Arm arm, Climber climber) {
     addCommands(new SequentialCommandGroup(
       new RunCommand(() -> drivetrain.arcadeDrive(0.5, 0), drivetrain).withTimeout(1),
       new InstantCommand(() -> drivetrain.stop(), drivetrain),
@@ -36,7 +37,9 @@ public class DiagnosticTest extends SequentialCommandGroup {
       new MoveArmToPosition(arm, 0, 0.075, 1),
       new WaitCommand(1),
       new RunCommand(() -> indexer.on(), indexer).withTimeout(1.5),
-      new InstantCommand(() -> indexer.off(), indexer)
+      new InstantCommand(() -> indexer.off(), indexer),
+      new RunCommand(() -> climber.rotateArms(0.2, true), climber).withTimeout(2),
+      new InstantCommand(() -> climber.rotateArms(0, true), climber)
     ));
   }
 }

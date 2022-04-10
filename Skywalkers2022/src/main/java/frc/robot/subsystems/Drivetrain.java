@@ -51,15 +51,7 @@ public class Drivetrain extends SubsystemBase {
     leftFollower.follow(leftMaster);
     rightFollower.follow(rightMaster);
 
-    // leftMaster.setNeutralMode(NeutralMode.Coast);
-    // leftFollower.setNeutralMode(NeutralMode.Coast);
-    // rightMaster.setNeutralMode(NeutralMode.Coast);
-    // rightFollower.setNeutralMode(NeutralMode.Coast);
-
-    leftMaster.setNeutralMode(NeutralMode.Brake);
-    leftFollower.setNeutralMode(NeutralMode.Brake);
-    rightMaster.setNeutralMode(NeutralMode.Brake);
-    rightFollower.setNeutralMode(NeutralMode.Brake);
+    brake();
 
     leftMaster.setInverted(DriveConstants.kLeftInvertType);
     leftFollower.setInverted(DriveConstants.kLeftInvertType);
@@ -73,11 +65,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Drivetrain Left Voltage", leftMaster.get());
-    SmartDashboard.putNumber("Drivetrain Right Voltage", rightMaster.get());
+    // SmartDashboard.putNumber("Drivetrain Left Voltage", leftMaster.get());
+    // SmartDashboard.putNumber("Drivetrain Right Voltage", rightMaster.get());
     SmartDashboard.putNumber("IMU Heading", getHeading());
-    SmartDashboard.putNumber("IMU Tilt", getTilt());
+    // SmartDashboard.putNumber("IMU Tilt", getTilt());
   }
 
   public void stop() {
@@ -136,5 +127,19 @@ public class Drivetrain extends SubsystemBase {
     double[] YPR = new double[3];
     imu.getYawPitchRoll(YPR);
     return YPR[2] - initialTilt;
+  }
+
+  public void coast() {
+    leftMaster.setNeutralMode(NeutralMode.Coast);
+    leftFollower.setNeutralMode(NeutralMode.Coast);
+    rightMaster.setNeutralMode(NeutralMode.Coast);
+    rightFollower.setNeutralMode(NeutralMode.Coast);
+  }
+
+  public void brake() {
+    leftMaster.setNeutralMode(NeutralMode.Brake);
+    leftFollower.setNeutralMode(NeutralMode.Brake);
+    rightMaster.setNeutralMode(NeutralMode.Brake);
+    rightFollower.setNeutralMode(NeutralMode.Brake);
   }
 }

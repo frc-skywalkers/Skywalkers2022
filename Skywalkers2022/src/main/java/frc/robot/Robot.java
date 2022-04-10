@@ -51,7 +51,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.drive.coast();
+    m_robotContainer.limelight.ledOff();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -65,6 +68,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    m_robotContainer.drive.brake();
   }
 
   /** This function is called periodically during autonomous. */
@@ -81,15 +85,16 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     startTime = Timer.getFPGATimestamp();
+    m_robotContainer.drive.coast();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double diff = Timer.getFPGATimestamp() - startTime - 95;
-    if (0 < diff && diff < 2) {
+    double diff = Timer.getFPGATimestamp() - startTime - 90;
+    if (0 < diff && diff < 1.5) {
       m_robotContainer.startRumble();
-    } else if (diff > 2) {
+    } else if (diff > 1.5) {
       m_robotContainer.stopRumble();
     }
   }

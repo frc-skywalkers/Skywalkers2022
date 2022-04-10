@@ -11,11 +11,14 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignRobotShooter;
 import frc.robot.commands.DiagnosticTest;
+import frc.robot.commands.IMUTurn;
 import frc.robot.commands.IndexBall;
 import frc.robot.commands.MVPAuto;
 import frc.robot.commands.MoveArmToPosition;
@@ -36,14 +39,14 @@ import frc.robot.subsystems.Arm;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private Drivetrain drive = new Drivetrain();
+  public Drivetrain drive = new Drivetrain();
   private Climber climber = new Climber();
   private Intake intake = new Intake();
   private Arm arm = new Arm();
   private Indexer indexer = new Indexer();
   private Hood hood = new Hood();
   private Shooter shooter = new Shooter();
-  private Limelight limelight = new Limelight();
+  public Limelight limelight = new Limelight();
 
   // private boolean climberStarted = false;
 
@@ -94,7 +97,7 @@ public class RobotContainer {
       () ->
         climber.rotateArms(
           driverController2.getRawAxis(OIConstants.kLeftY),
-          driverController2.getRawButton(OIConstants.kY)),
+          true),
       climber));
 
     indexer.setDefaultCommand(new RunCommand(
@@ -118,22 +121,35 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController1, Button.kA.value).whenPressed(
+
+    // Change intake on to second controller up d-pad; remove on intake from first controller
+    // Same thing for off intake; put it on down d-pad
+    // Move deploy intake and retract to second controller
+
+    new POVButton(driverController2, 0).whenPressed(
       new InstantCommand(() -> intake.intake(), intake)
-      .alongWith(new IndexBall(indexer))
+      // .alongWith(new IndexBall(indexer))
     );
 
-    new JoystickButton(driverController1, Button.kB.value).whenPressed(new InstantCommand(
+    new POVButton(driverController2, 180).whenPressed(new InstantCommand(
       () -> {
         intake.stopRollers();
-        indexer.off();
-      }, indexer, intake));
+        // indexer.off();
+      }, intake));
 
     new JoystickButton(driverController2, Button.kX.value).whenPressed(new InstantCommand(() -> limelight.ledOn()).andThen(new RunCommand(
       () -> {
-        hood.setPosition(MathUtil.clamp(9.18 * limelight.getDistance() / 12 - 59.9, 0, 90));
-        shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
+        // if (driverController2.getRawButton(OIConstants.kY)) {
+          // shooter.setSpeed(10);
+        // } else {
+          hood.setPosition(MathUtil.clamp(9.18 * limelight.getDistance() / 12 - 59.9, 0, 90));
+          shooter.setSpeed(MathUtil.clamp(0.503 * limelight.getDistance() / 12 + 16.8, 0, 26));
+        // }
       }, shooter, hood)));
+
+    new JoystickButton(driverController2, Button.kY.value).whenPressed(
+      new InstantCommand(() -> shooter.setSpeed(20))
+      .alongWith(new InstantCommand(() -> hood.setPosition(20))));
 
     new JoystickButton(driverController2, Button.kA.value).whenPressed(
       new RunCommand(() -> indexer.setOutput(0.9), indexer).withTimeout(2)
@@ -143,12 +159,25 @@ public class RobotContainer {
       new InstantCommand(() -> shooter.stopShoot(), shooter).andThen(new InstantCommand(() -> limelight.ledOff()))
     );
 
-    new JoystickButton(driverController1, Button.kRightBumper.value).whenPressed(new MoveArmToPosition(arm, 0, 0.125, 0.25));
-    new JoystickButton(driverController1, Button.kLeftBumper.value).whenPressed(new MoveArmToPosition(arm, 14, 0.075, 0.25));
+    new JoystickButton(driverController2, Button.kRightBumper.value).whenPressed(
+      new InstantCommand(() -> intake.stopRollers())
+      .andThen(new MoveArmToPosition(arm, 0, 0.125, 0.25))
+      .andThen(new InstantCommand(() -> indexer.off())));
+
+    new JoystickButton(driverController2, Button.kLeftBumper.value).whenPressed(
+      new MoveArmToPosition(arm, 14, 0.075, 0.25)
+      .andThen(new InstantCommand(() -> intake.intake())
+      .alongWith(new InstantCommand(() -> shooter.setSpeed(0), shooter)
+      .alongWith(new InstantCommand(() -> limelight.ledOff())
+      .andThen(new IndexBall(indexer))
+      ))));
 
     new JoystickButton(driverController1, Button.kX.value).whenPressed(
-      new InstantCommand(() -> limelight.ledOn()).andThen(
-      new AlignRobotShooter(limelight, 0.2, 1, drive)));
+      new InstantCommand(() -> limelight.ledOn()).andThen( 
+      new AlignRobotShooter(limelight, 0.4, 1, drive, driverController1, 0.15, 0, 0)).andThen(
+      new RunCommand(() -> {setRumble(0.2);}).withTimeout(0.5)).andThen(
+      new InstantCommand(() -> {stopRumble();}))
+    );
   }
 
   /**
@@ -157,9 +186,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return new DiagnosticTest(drive, shooter, hood, intake, indexer, arm);
     // return new MVPAuto(shooter, indexer, drive);
+    // return new IMUTurn(drive, 175, 0.4, 1)
+    // .andThen(new WaitCommand(2))
+    // .andThen(new IMUTurn(drive, 5, 0.4, 1));
     return new TwoBallAuto(drive, shooter, hood, indexer, arm, intake, limelight);
+    // return new DiagnosticTest(drive, shooter, hood, intake, indexer, arm, climber);
   }
 
   private void setRumble(double intensity) {

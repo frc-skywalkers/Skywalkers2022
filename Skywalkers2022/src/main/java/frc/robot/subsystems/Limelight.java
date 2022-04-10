@@ -13,7 +13,7 @@ public class Limelight extends SubsystemBase {
   private static final double CAM_MOUNTING_ANGLE = 35;
   private static final double CAM_HEIGHT = 27.5;
   private static final double GOAL_HEIGHT = 104;
-  private static final double DISTANCE_OFFSET = 17;
+  private static final double DISTANCE_OFFSET = 10;
 
   private NetworkTable table;
   private double x;
@@ -29,6 +29,7 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    table.getEntry("pipeline").setNumber(1);
     SmartDashboard.putNumber("Limelight X", x);
     SmartDashboard.putNumber("Limelight Y", y);
     updateValues();

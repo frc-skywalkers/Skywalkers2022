@@ -25,9 +25,8 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     SmartDashboard.putNumber("Proximity", colorSensor.getProximity());
-    SmartDashboard.putNumber("Indexer Voltage", indexerMotor.get());
+    // SmartDashboard.putNumber("Indexer Voltage", indexerMotor.get());
   }
 
   public void setOutput(double speed) {

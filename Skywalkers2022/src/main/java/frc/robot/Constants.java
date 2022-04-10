@@ -34,7 +34,7 @@ public final class Constants {
         public static final int kLeftBumper = 5;
         public static final int kRightBumper = 6;
 
-        public static final double kDeadZone = 0.075;
+        public static final double kDeadZone = 0.1;
     }
 
     public static final class DriveConstants {
@@ -68,7 +68,7 @@ public final class Constants {
     
     public static final class IntakeConstants {
         public static final int kIntakeMotor = 8;
-        public static final double kMaxOutput = 0.7;
+        public static final double kMaxOutput = 0.5;
         public static final boolean kIntakeInvert = true;
     }
 
@@ -91,6 +91,6 @@ public final class Constants {
     public static final class IndexerConstants {
         public static int kMotorPort = 25;
         public static boolean kInvert = true;
-        public static double kIndexerSpeed = 0.3;
+        public static double kIndexerSpeed = 0.4;
     }
 }

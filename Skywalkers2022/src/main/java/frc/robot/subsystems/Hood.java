@@ -48,8 +48,8 @@ public class Hood extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Hood Position", getPosition());
-    SmartDashboard.putNumber("Hood Target", targetPosition);
-    SmartDashboard.putNumber("Hood Voltage", hoodMotor.get());
+    // SmartDashboard.putNumber("Hood Target", targetPosition);
+    // SmartDashboard.putNumber("Hood Voltage", hoodMotor.get());
   }
 
   public void setPosition(double target) {
